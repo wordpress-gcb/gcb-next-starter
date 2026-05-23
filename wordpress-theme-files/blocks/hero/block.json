@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gcb/hero",
+  "title": "Hero",
+  "category": "widgets",
+  "icon": "cover-image",
+  "description": "Above-the-fold hero with eyebrow, heading, body, image, and CTA buttons.",
+  "keywords": ["hero", "banner", "header"],
+  "textdomain": "gcb",
+  "attributes": {},
+  "supports": {}
+}

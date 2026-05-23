@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gcb/feature-trio",
+  "title": "Feature Trio",
+  "category": "widgets",
+  "icon": "screenoptions",
+  "description": "A three-column feature section. Holds Feature Item children.",
+  "keywords": ["features", "columns", "grid"],
+  "textdomain": "gcb",
+  "attributes": {},
+  "supports": {}
+}

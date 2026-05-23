@@ -1,0 +1,20 @@
+{
+  "controls": [
+    { "id": "panel_header", "type": "group", "label": "Header", "controlsGroup": "settings" },
+
+    { "id": "ctrl_eyebrow", "type": "text", "label": "Eyebrow", "attributeKey": "eyebrow", "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_header" },
+
+    { "id": "ctrl_heading", "type": "text", "label": "Heading", "attributeKey": "heading", "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_header" },
+
+    { "id": "ctrl_intro",   "type": "textarea", "label": "Intro", "attributeKey": "intro", "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_header" }
+  ],
+  "allowed_blocks": ["gcb/feature-item"],
+  "child_constraints": {
+    "defaultChildren": 3,
+    "minChildren": 1,
+    "addButtonLabel": "Add feature"
+  }
+}

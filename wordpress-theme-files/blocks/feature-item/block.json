@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gcb/feature-item",
+  "title": "Feature Item",
+  "category": "widgets",
+  "icon": "marker",
+  "description": "Single feature card. Only valid inside a Feature Trio.",
+  "keywords": ["feature", "card"],
+  "textdomain": "gcb",
+  "attributes": {},
+  "supports": {}
+}

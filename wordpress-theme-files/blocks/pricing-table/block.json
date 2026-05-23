@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gcb/pricing-table",
+  "title": "Pricing Table",
+  "category": "widgets",
+  "icon": "money-alt",
+  "description": "Three-tier pricing table with feature lists and a button per tier.",
+  "keywords": ["pricing", "plans"],
+  "textdomain": "gcb",
+  "attributes": {},
+  "supports": {}
+}

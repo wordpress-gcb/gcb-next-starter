@@ -1,0 +1,14 @@
+{
+  "controls": [
+    { "id": "panel_item", "type": "group", "label": "Feature", "controlsGroup": "settings" },
+
+    { "id": "ctrl_icon",  "type": "icon", "label": "Icon", "attributeKey": "icon",
+      "controlsGroup": "settings", "parentPanelId": "panel_item" },
+
+    { "id": "ctrl_title", "type": "text", "label": "Title", "attributeKey": "title", "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_item" },
+
+    { "id": "ctrl_body",  "type": "textarea", "label": "Body", "attributeKey": "body", "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_item" }
+  ]
+}
