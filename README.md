@@ -10,6 +10,9 @@ gallery) so you can see the full editor ↔ frontend round-trip working in
 60 seconds. A richer block library lives on the [`examples` branch](https://github.com/wordpress-gcb/gcb-next-starter/tree/examples)
 for fork-and-prune adoption.
 
+**[Live demo](https://gcb-next-starter.vercel.app/)** — the `examples`
+branch deployed as-is.
+
 ---
 
 ## What this is for
