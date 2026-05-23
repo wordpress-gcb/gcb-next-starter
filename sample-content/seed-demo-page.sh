@@ -4,16 +4,17 @@
 # cloning the repo see the demo in one command instead of building the
 # page block-by-block in wp-admin.
 #
-# Usage (from the WP install root, where you'd normally run wp-cli):
-#   bash wp-content/plugins/gcb-lite/next-frontend-example/sample-content/seed-demo-page.sh
+# Usage (from your WP install root, where you'd normally run wp-cli):
+#   bash /path/to/gcb-next-starter/sample-content/seed-demo-page.sh
 #
 # Idempotent — if the page already exists it updates the existing one
 # rather than creating a duplicate.
 #
-# Requires: WP-CLI on PATH, WP 6.x+, gcb-lite plugin active, component
-# server running at localhost:3001 (or wherever GCBLITE_COMPONENT_SERVER_URL
-# points), and the three test blocks registered (which happens
-# automatically when gcb-lite + control-blocks-theme are both active).
+# Requires: WP-CLI on PATH, WP 6.x+, the gcb-lite plugin active, this
+# starter running at localhost:3001 (or wherever GCBLITE_COMPONENT_SERVER_URL
+# points), and the three reference blocks registered in the active theme
+# (block.json + block.fields.json for accordion-test, accordion-test-item,
+# text-image, gallery-test).
 
 set -euo pipefail
 

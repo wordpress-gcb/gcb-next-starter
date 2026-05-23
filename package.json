@@ -1,6 +1,13 @@
 {
-  "name": "gcblite-next-frontend-example",
+  "name": "gcb-next-starter",
   "version": "0.1.0",
+  "description": "Next.js starter for GCB Lite. Implements the wp-block-wrapper contract so WordPress can render React components as block editor previews. Fork this and grow it into your real site.",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://github.com/wordpress-gcb/gcb-next-starter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wordpress-gcb/gcb-next-starter.git"
+  },
   "private": true,
   "type": "module",
   "scripts": {

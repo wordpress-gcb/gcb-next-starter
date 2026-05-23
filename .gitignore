@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+# But ship the example template
+!.env.local.example
+
+# Local tooling state
+.claude/
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs / caches
+*.log
+npm-debug.log*
+.eslintcache
+.cache/
