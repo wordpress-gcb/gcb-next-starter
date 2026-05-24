@@ -1,91 +1,85 @@
 /**
  * Examples-branch demo homepage.
  *
- * Composes the marketing blocks (Hero, FeatureTrio, Cta) with static
- * content, so it renders without needing a paired WordPress install. It's
- * the gcb-lite landing page, built out of its own blocks.
+ * Fetches the WP page with slug "home" and renders it via BlockRenderer.
+ * This is the actual "WP as CMS for a React frontend" loop in action —
+ * edit the page in wp-admin, save, reload here.
  *
- * In a real deployment you wouldn't hardcode block content like this —
- * you'd fetch a WP page via /wp-json/wp/v2/pages and let
- * app/[...slug]/page.jsx walk the block tree. This page exists so the
- * `examples` branch works out of the box without a paired WordPress.
+ * Falls back to a helpful setup-state if:
+ *   - NEXT_PUBLIC_WP_URL isn't set (Vercel build / fork before configuring)
+ *   - the "home" page doesn't exist on the configured WP yet
+ *   - the WP install isn't reachable
+ *
+ * Without the fallback, a fresh fork would crash at runtime instead of
+ * pointing the new user at what to do.
  */
 
-import Hero from '@/components/Hero';
-import FeatureTrio from '@/components/FeatureTrio';
-import Cta from '@/components/Cta';
+import {
+  getPageBySlug,
+  parseBlocks,
+  blockSourceFromEntity,
+  getBlockDefaults,
+} from '@/lib/wpRestClient';
+import BlockRenderer from '@/components/BlockRenderer';
 
-export default function Home() {
+const HOME_SLUG = 'home';
+
+export default async function Home() {
+  // If WordPress isn't wired up yet, show a setup hint instead of crashing.
+  if (!process.env.NEXT_PUBLIC_WP_URL) {
+    return <SetupHint reason="missing-env" />;
+  }
+
+  let page = null;
+  let error = null;
+  try {
+    page = await getPageBySlug(HOME_SLUG);
+  } catch (e) {
+    error = e?.message || String(e);
+  }
+
+  if (error) {
+    return <SetupHint reason="fetch-failed" detail={error} />;
+  }
+  if (!page) {
+    return <SetupHint reason="no-page" />;
+  }
+
+  const blocks = parseBlocks(blockSourceFromEntity(page));
+  const blockDefaults = await getBlockDefaults().catch(() => ({}));
+
   return (
     <main>
-      <Hero
-        attributes={{
-          eyebrow: 'GCB Lite · WordPress + React',
-          heading: 'Author in Gutenberg. Render in React.',
-          body: '<p>Build custom blocks with typed fields, then render the same React component in the editor preview and on your public Next.js site. No <code>edit.js</code> to maintain in parallel with your real frontend.</p>',
-          imageSide: 'right',
-          ctaPrimary: {
-            url: 'https://github.com/wordpress-gcb/gutenberg-control-blocks-lite',
-            text: 'View on GitHub',
-            opensInNewTab: true,
-          },
-          ctaSecondary: {
-            url: 'https://github.com/wordpress-gcb/gcb-next-starter',
-            text: 'Try the starter',
-            opensInNewTab: true,
-          },
-        }}
-      />
+      <BlockRenderer blocks={blocks} blockDefaults={blockDefaults} />
+    </main>
+  );
+}
 
-      <FeatureTrio
-        attributes={{
-          eyebrow: 'What you get',
-          heading: 'One source of truth per block',
-          intro:
-            'The editor preview is the same React component you ship to production, server-rendered and handed to wp-admin as HTML.',
-        }}
-        innerBlocks={[
-          {
-            blockName: 'gcb/feature-item',
-            attrs: {
-              icon: { source: 'dashicon', icon: 'editor-code' },
-              title: 'One component, two contexts',
-              body: 'Write the React component once. WordPress fetches it server-to-server for the editor preview; visitors see the same component on the public site.',
-            },
-          },
-          {
-            blockName: 'gcb/feature-item',
-            attrs: {
-              icon: { source: 'dashicon', icon: 'admin-customizer' },
-              title: '30+ Inspector controls',
-              body: 'Image with focal point, gallery with drag-to-reorder, post relationships, taxonomy, icon, repeater. The rich stuff core leaves to plugins.',
-            },
-          },
-          {
-            blockName: 'gcb/feature-item',
-            attrs: {
-              icon: { source: 'dashicon', icon: 'admin-tools' },
-              title: 'AI-ready out of the box',
-              body: 'Registers WordPress 7 Abilities for list-blocks and render-block, so MCP clients like Claude Desktop can drive the editor without bespoke glue.',
-            },
-          },
-        ]}
-      />
-
-      <Cta
-        attributes={{
-          heading: 'Ready to build?',
-          body:
-            "Clone the plugin and the starter. You'll be authoring React-rendered blocks in under five minutes.",
-          variant: 'branded',
-          link: {
-            url:
-              'https://github.com/wordpress-gcb/gutenberg-control-blocks-lite#quick-start',
-            text: 'Read the quick-start',
-            opensInNewTab: true,
-          },
-        }}
-      />
+function SetupHint({ reason, detail }) {
+  const messages = {
+    'missing-env':
+      'NEXT_PUBLIC_WP_URL is not set. Add it to the Vercel project (or .env.local for local dev) and redeploy.',
+    'fetch-failed': `Could not reach WordPress at ${process.env.NEXT_PUBLIC_WP_URL}.`,
+    'no-page': `No page with slug "${HOME_SLUG}" found on ${process.env.NEXT_PUBLIC_WP_URL}. Create one in wp-admin and add some gcb/* blocks.`,
+  };
+  return (
+    <main className="max-w-2xl mx-auto p-12 font-sans">
+      <h1 className="text-2xl font-semibold text-neutral-900 mb-3">
+        GCB Lite demo — setup needed
+      </h1>
+      <p className="text-neutral-700 mb-2">{messages[reason]}</p>
+      {detail && (
+        <pre className="mt-4 text-xs text-neutral-500 bg-neutral-100 rounded p-3 overflow-auto">
+          {detail}
+        </pre>
+      )}
+      <p className="text-sm text-neutral-500 mt-6">
+        See{' '}
+        <a className="underline" href="https://github.com/wordpress-gcb/gcb-next-starter">
+          the README
+        </a>{' '}
+        for setup steps.
+      </p>
     </main>
   );
 }
