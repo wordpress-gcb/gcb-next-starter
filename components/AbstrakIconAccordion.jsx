@@ -20,8 +20,24 @@
  */
 
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import * as Fa from 'react-icons/fa';
-import { FaCircle } from 'react-icons/fa';
+
+// Curated icon set — direct file imports so esbuild tree-shakes the rest
+// of react-icons/fa (the barrel index is ~1.3MB unminified). To add an
+// icon, add its import here and to ICON_MAP below. Authors can only
+// choose from this set, which is intentional: the demo's seeded blocks
+// reference a small fixed list.
+import { FaCircle  } from 'react-icons/fa';
+import { FaTags    } from 'react-icons/fa';
+import { FaSyncAlt } from 'react-icons/fa';
+import { FaCode    } from 'react-icons/fa';
+import { FaSitemap } from 'react-icons/fa';
+import { FaServer  } from 'react-icons/fa';
+import { FaCompress } from 'react-icons/fa';
+import { FaGlobe   } from 'react-icons/fa';
+
+const ICON_MAP = {
+  FaCircle, FaTags, FaSyncAlt, FaCode, FaSitemap, FaServer, FaCompress, FaGlobe,
+};
 
 const HEADING_LEVELS = new Set(['h2', 'h3', 'h4']);
 
@@ -141,14 +157,11 @@ function Collapse({ isOpen, children }) {
 }
 
 /**
- * Resolve a react-icons/fa (FontAwesome 5) icon by string name. Authors
- * set the icon attribute to `FaCompress`, `FaCode`, `FaGlobe`, etc. —
- * anything from https://react-icons.github.io/react-icons/icons/fa.
- *
- * Unknown names fall back to FaCircle so the layout doesn't break.
+ * Resolve an icon by string name. Authors set the icon attribute to one
+ * of the names in ICON_MAP (FaTags, FaCode, etc.). Unknown names fall
+ * back to FaCircle so the layout doesn't break.
  */
 function resolveIcon(name) {
   if (!name) return FaCircle;
-  const Icon = Fa[name];
-  return typeof Icon === 'function' ? Icon : FaCircle;
+  return ICON_MAP[name] || FaCircle;
 }

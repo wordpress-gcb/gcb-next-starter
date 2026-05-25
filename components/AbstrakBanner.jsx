@@ -23,6 +23,7 @@
  */
 
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from 'react-icons/fa';
+import { img } from './imageBase';
 
 // Abstrak's hero sample copy — used when the matching attribute is
 // empty. Means an unedited block in the editor previews fully styled
@@ -86,7 +87,7 @@ export default function AbstrakBanner({ attributes = {} }) {
         <div className="banner-thumbnail">
           <div className="large-thumb">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={image.url} alt={image.alt || ''} />
+            <img src={img(image.url)} alt={image.alt || ''} />
           </div>
         </div>
         <div className="banner-social">
@@ -100,8 +101,8 @@ export default function AbstrakBanner({ attributes = {} }) {
       </div>
       <ul className="list-unstyled shape-group-19">
         {/* eslint-disable @next/next/no-img-element */}
-        <li className="shape shape-1"><img src="/images/others/bubble-29.png" alt="" /></li>
-        <li className="shape shape-2"><img src="/images/others/line-7.png" alt="" /></li>
+        <li className="shape shape-1"><img src={img('/images/others/bubble-29.png')} alt="" /></li>
+        <li className="shape shape-2"><img src={img('/images/others/line-7.png')} alt="" /></li>
         {/* eslint-enable @next/next/no-img-element */}
       </ul>
     </div>
