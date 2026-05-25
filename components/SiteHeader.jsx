@@ -28,9 +28,25 @@ export default function SiteHeader() {
         <div className="container">
           <div className="header-navbar">
             <div className="header-logo">
-              <Link href="/" aria-label="GCB Lite — home">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/logo.svg" alt="GCB Lite" style={{ height: 32 }} />
+              <Link
+                href="/"
+                aria-label="GCB Lite — home"
+                style={{
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+                  fontSize: 22,
+                  fontWeight: 700,
+                  letterSpacing: -0.5,
+                  color: 'var(--color-heading, #14181f)',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'baseline',
+                  gap: 6,
+                }}
+              >
+                GCB
+                <span style={{ fontWeight: 400, fontSize: 12, color: 'var(--color-gray-1, #6b7280)' }}>
+                  /lite
+                </span>
               </Link>
             </div>
 
