@@ -29,8 +29,8 @@ import { img } from './imageBase';
 // empty. Means an unedited block in the editor previews fully styled
 // rather than blank.
 const SAMPLE = {
-  heading:  'Typed Gutenberg blocks. From a JSON file, not an admin screen.',
-  body:     'File-based schemas. No UI authoring. A scaffold CLI built for stdin. Render in PHP, React, or both — same typed fields, same source of truth.',
+  heading:  'Building custom Gutenberg blocks should be this easy.',
+  body:     "One JSON file defines your fields. 30+ premium controls render natively in the Inspector — image focal points, galleries, repeaters, post relationships, conditional logic.\n\nGo headless: write one React component, get pixel-perfect 1:1 previews in wp-admin and on your public site. Or render in PHP if React's overkill. Your choice, per block.",
   ctaText:  'View on GitHub',
   ctaHref:  'https://github.com/wordpress-gcb/gutenberg-control-blocks-lite',
   image:    '/images/banner/banner-thumb-7.png',
@@ -72,7 +72,9 @@ export default function AbstrakBanner({ attributes = {} }) {
       <div className="container">
         <div className="banner-content">
           <HeadingTag className="title">{headingText}</HeadingTag>
-          <p>{body}</p>
+          {body.split(/\n{2,}/).map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
           <div>
             <a
               href={primaryHref}
