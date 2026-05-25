@@ -15,6 +15,8 @@
  *   cta:     { url, text, opensInNewTab }
  */
 
+import { img } from './imageBase';
+
 const SAMPLE = {
   subtitle: 'Open source — MIT',
   heading:  'Ready to ship typed Gutenberg blocks?',
@@ -59,16 +61,16 @@ export default function AbstrakCta({ attributes = {} }) {
           <div className="thumbnail">
             <div className="larg-thumb">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="paralax-image" src="/images/others/chat-group.png" alt="Chat" />
+              <img className="paralax-image" src={img('/images/others/chat-group.png')} alt="Chat" />
             </div>
             <ul className="list-unstyled small-thumb">
               <li className="shape shape-1">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="paralax-image" src="/images/others/laptop-poses.png" alt="Laptop" />
+                <img className="paralax-image" src={img('/images/others/laptop-poses.png')} alt="Laptop" />
               </li>
               <li className="shape shape-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="paralax-image" src="/images/others/bill-pay.png" alt="Bill" />
+                <img className="paralax-image" src={img('/images/others/bill-pay.png')} alt="Bill" />
               </li>
             </ul>
           </div>
@@ -76,13 +78,13 @@ export default function AbstrakCta({ attributes = {} }) {
       </div>
       <ul className="list-unstyled shape-group-9">
         {/* eslint-disable @next/next/no-img-element */}
-        <li className="shape shape-1"><img src="/images/others/bubble-12.png" alt="" /></li>
-        <li className="shape shape-2"><img src="/images/others/bubble-16.png" alt="" /></li>
-        <li className="shape shape-3"><img src="/images/others/bubble-13.png" alt="" /></li>
-        <li className="shape shape-4"><img src="/images/others/bubble-14.png" alt="" /></li>
-        <li className="shape shape-5"><img src="/images/others/bubble-16.png" alt="" /></li>
-        <li className="shape shape-6"><img src="/images/others/bubble-15.png" alt="" /></li>
-        <li className="shape shape-7"><img src="/images/others/bubble-16.png" alt="" /></li>
+        <li className="shape shape-1"><img src={img('/images/others/bubble-12.png')} alt="" /></li>
+        <li className="shape shape-2"><img src={img('/images/others/bubble-16.png')} alt="" /></li>
+        <li className="shape shape-3"><img src={img('/images/others/bubble-13.png')} alt="" /></li>
+        <li className="shape shape-4"><img src={img('/images/others/bubble-14.png')} alt="" /></li>
+        <li className="shape shape-5"><img src={img('/images/others/bubble-16.png')} alt="" /></li>
+        <li className="shape shape-6"><img src={img('/images/others/bubble-15.png')} alt="" /></li>
+        <li className="shape shape-7"><img src={img('/images/others/bubble-16.png')} alt="" /></li>
         {/* eslint-enable @next/next/no-img-element */}
       </ul>
     </div>
