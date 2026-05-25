@@ -7,5 +7,9 @@
 //   sass --no-source-map theme-bundle/theme.scss -> theme.css
 // Output goes to gcblite/examples/themes/gcb-abstrak/build/theme.css.
 
-@import "bootstrap/dist/css/bootstrap.min.css";
+// Import Bootstrap's SCSS source so sass actually inlines it. The
+// compiled bootstrap.min.css form leaves a literal `@import url(...)`
+// in the output that 404s at runtime — the source form gets concatenated
+// into the same stylesheet.
+@import "bootstrap/scss/bootstrap";
 @import "../abstrak-scss/app";
