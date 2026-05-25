@@ -26,6 +26,19 @@ import FeatureTrio from '../../components/FeatureTrio';
 import FeatureItem from '../../components/FeatureItem';
 import Cta from '../../components/Cta';
 
+// Abstrak demo — section blocks composed in WP, rendered here. CPT-driven
+// blocks (projects, testimonials, brands, blog) are server components that
+// fetch their data via the WP REST API.
+import AbstrakBanner            from '../../components/AbstrakBanner';
+import AbstrakProjects          from '../../components/AbstrakProjects';
+import AbstrakTestimonials      from '../../components/AbstrakTestimonials';
+import AbstrakBrands            from '../../components/AbstrakBrands';
+import AbstrakBlog              from '../../components/AbstrakBlog';
+import AbstrakCta               from '../../components/AbstrakCta';
+import AbstrakSectionText       from '../../components/AbstrakSectionText';
+import AbstrakIconAccordion     from '../../components/AbstrakIconAccordion';
+import AbstrakIconAccordionItem from '../../components/AbstrakIconAccordionItem';
+
 export const WP_BLOCK_REGISTRY = {
   // Reference
   'gcb/accordion-test': Accordion,
@@ -38,4 +51,15 @@ export const WP_BLOCK_REGISTRY = {
   'gcb/feature-trio': FeatureTrio,
   'gcb/feature-item': FeatureItem,
   'gcb/cta': Cta,
+
+  // Abstrak demo
+  'gcb/abstrak-banner':               AbstrakBanner,
+  'gcb/abstrak-projects':             AbstrakProjects,
+  'gcb/abstrak-testimonials':         AbstrakTestimonials,
+  'gcb/abstrak-brands':               AbstrakBrands,
+  'gcb/abstrak-blog':                 AbstrakBlog,
+  'gcb/abstrak-cta':                  AbstrakCta,
+  'gcb/abstrak-section-text':         AbstrakSectionText,
+  'gcb/abstrak-icon-accordion':       AbstrakIconAccordion,
+  'gcb/abstrak-icon-accordion-item':  AbstrakIconAccordionItem,
 };
