@@ -29,6 +29,8 @@ import AbstrakBlogView        from '@/components/AbstrakBlogView';
 import AbstrakCta             from '@/components/AbstrakCta';
 import AbstrakIconAccordion   from '@/components/AbstrakIconAccordion';
 import AbstrakSectionText     from '@/components/AbstrakSectionText';
+import SiteHeader             from '@/components/SiteHeader';
+import SiteFooter             from '@/components/SiteFooter';
 
 /**
  * Per-block adapters: take the data-props PHP emits, return the props
@@ -161,10 +163,34 @@ function hydrateAll() {
   });
 }
 
+/**
+ * Mount SiteHeader / SiteFooter into theme-emitted placeholders.
+ *
+ * The theme's header.php and footer.php emit empty <div id="gcb-site-
+ * header"> / <div id="gcb-site-footer"> placeholders. Same component
+ * source as the Next.js demo (components/SiteHeader.jsx + SiteFooter.jsx)
+ * so the WP frontend gets the same nav + GitHub link + footer chrome.
+ */
+function mountChrome() {
+  const headerEl = document.getElementById('gcb-site-header');
+  if (headerEl) {
+    createRoot(headerEl).render(<SiteHeader />);
+  }
+  const footerEl = document.getElementById('gcb-site-footer');
+  if (footerEl) {
+    createRoot(footerEl).render(<SiteFooter />);
+  }
+}
+
+function bootAll() {
+  mountChrome();
+  hydrateAll();
+}
+
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', hydrateAll);
+    document.addEventListener('DOMContentLoaded', bootAll);
   } else {
-    hydrateAll();
+    bootAll();
   }
 }

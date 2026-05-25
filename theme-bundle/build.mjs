@@ -60,6 +60,9 @@ async function buildJs() {
     alias: {
       // Mirror Next.js's @ alias so the components import normally.
       '@': repoRoot,
+      // SiteHeader / SiteFooter import next/link; swap it for a tiny
+      // <a> shim since the theme bundle has no Next.js router.
+      'next/link': resolve(here, 'next-link-shim.jsx'),
     },
     logLevel: 'info',
   });
