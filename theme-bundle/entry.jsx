@@ -135,26 +135,43 @@ const REGISTRY = {
  * INTO the existing wrapper (not replace it) so the outer attributes
  * survive — React only owns the inner content.
  *
- * Marked-hydrated guard via a WeakSet — calling hydrateAll() multiple
- * times (e.g. from the editor MutationObserver below as new preview
- * blocks appear) is a no-op for wrappers already mounted, preserving
- * the React state of existing instances.
+ * Idempotency model:
+ *   - Each wrapper keeps its createRoot() Root on a WeakMap.
+ *   - We also remember the last data-props string we rendered with.
+ *   - Subsequent hydrateAll() calls REUSE the Root if the wrapper is
+ *     the same DOM node — React reconciles cheaply.
+ *   - If data-props changed (editor typed a new heading), we re-render
+ *     through the existing Root with the new props. That's the live-
+ *     edit story in the editor.
+ *
+ * Why a Map rather than a WeakSet flag:
+ *   - The WeakSet variant made hydration a one-shot. After the first
+ *     call, the wrapper was marked hydrated and subsequent data-props
+ *     changes (from the WP editor's PHPPreviewEdit re-fetching the
+ *     server-rendered HTML on attribute change) were ignored.
+ *   - Keeping the Root + last-props lets us call root.render(...) again
+ *     on the same wrapper with new props — that's how React's normal
+ *     re-render flow works.
  */
-const HYDRATED = new WeakSet();
+const ROOTS = new WeakMap();      // el → ReactRoot
+const LAST_PROPS = new WeakMap(); // el → JSON.stringify(props) we last rendered
 
 function hydrateAll() {
   const wrappers = document.querySelectorAll('[data-block-name]');
   wrappers.forEach((el) => {
-    if (HYDRATED.has(el)) return;
-
     const blockName = el.getAttribute('data-block-name');
     const Component = REGISTRY[blockName];
     const adapt     = ADAPTERS[blockName];
     if (!Component || !adapt) return;
 
+    const rawAttr = el.getAttribute('data-props') || '';
+    // Skip if data-props is identical to last render — saves the JSON
+    // parse + adapter call when nothing changed (initial scan finds 10
+    // blocks; MutationObserver fires hundreds of times during typing).
+    if (LAST_PROPS.get(el) === rawAttr) return;
+
     let raw = {};
     try {
-      const rawAttr = el.getAttribute('data-props');
       if (rawAttr) raw = JSON.parse(rawAttr);
     } catch (err) {
       console.warn(`gcb hydrate: bad data-props on ${blockName}`, err);
@@ -163,14 +180,20 @@ function hydrateAll() {
 
     const props = adapt(raw);
 
-    HYDRATED.add(el);
-
-    // Fresh createRoot rather than hydrateRoot: the SSR'd HTML was
-    // emitted by PHP and is shaped for raw-WP viewing, not React's
-    // hydration contract — a clean client-side render avoids mismatches.
-    el.innerHTML = '';
-    const root = createRoot(el);
+    let root = ROOTS.get(el);
+    if (!root) {
+      // First mount for this wrapper. Clear the SSR'd children so
+      // React owns the subtree cleanly. Fresh createRoot rather than
+      // hydrateRoot — the SSR'd HTML was shaped for raw-WP viewing,
+      // not React's hydration contract.
+      el.innerHTML = '';
+      root = createRoot(el);
+      ROOTS.set(el, root);
+    }
+    // For subsequent renders, React reconciles against its previous
+    // tree — no DOM teardown unless the props actually require it.
     root.render(<Component {...props} />);
+    LAST_PROPS.set(el, rawAttr);
   });
 }
 
