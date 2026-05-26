@@ -134,10 +134,19 @@ const REGISTRY = {
  * The wrapper's outer tag + classes are SSR'd by render.php. We render
  * INTO the existing wrapper (not replace it) so the outer attributes
  * survive — React only owns the inner content.
+ *
+ * Marked-hydrated guard via a WeakSet — calling hydrateAll() multiple
+ * times (e.g. from the editor MutationObserver below as new preview
+ * blocks appear) is a no-op for wrappers already mounted, preserving
+ * the React state of existing instances.
  */
+const HYDRATED = new WeakSet();
+
 function hydrateAll() {
   const wrappers = document.querySelectorAll('[data-block-name]');
   wrappers.forEach((el) => {
+    if (HYDRATED.has(el)) return;
+
     const blockName = el.getAttribute('data-block-name');
     const Component = REGISTRY[blockName];
     const adapt     = ADAPTERS[blockName];
@@ -153,6 +162,8 @@ function hydrateAll() {
     }
 
     const props = adapt(raw);
+
+    HYDRATED.add(el);
 
     // Fresh createRoot rather than hydrateRoot: the SSR'd HTML was
     // emitted by PHP and is shaped for raw-WP viewing, not React's
@@ -187,10 +198,34 @@ function bootAll() {
   hydrateAll();
 }
 
+/**
+ * In the WP block editor, gcb-lite's SSR loop injects rendered preview
+ * HTML INTO the editor's React tree on demand — after the initial DOM
+ * load, on every block insert / save / attribute change. A one-shot
+ * DOMContentLoaded scan would miss all of those.
+ *
+ * The observer re-runs hydrateAll on any subtree change. Hydration is
+ * idempotent (WeakSet guard above) so the cost per mutation is one
+ * querySelectorAll + a set lookup per wrapper — cheap enough at
+ * editor-interaction frequency.
+ *
+ * Frontend gets this too; harmless there since the DOM doesn't change
+ * after initial load.
+ */
+function watchForNewBlocks() {
+  if (typeof MutationObserver === 'undefined') return;
+  const observer = new MutationObserver(() => hydrateAll());
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootAll);
+    document.addEventListener('DOMContentLoaded', () => {
+      bootAll();
+      watchForNewBlocks();
+    });
   } else {
     bootAll();
+    watchForNewBlocks();
   }
 }
