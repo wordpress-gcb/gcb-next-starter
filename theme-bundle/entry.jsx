@@ -156,7 +156,37 @@ const REGISTRY = {
 const ROOTS = new WeakMap();      // el → ReactRoot
 const LAST_PROPS = new WeakMap(); // el → JSON.stringify(props) we last rendered
 
+/**
+ * Editor detection. We hydrate the polished Abstrak components ONLY on
+ * the public frontend, NOT inside the WP block editor.
+ *
+ * Why: the editor's own React tree (via gcb-lite's PHPPreviewEdit)
+ * owns the <section data-block-name> wrapper. If we createRoot into
+ * the same wrapper, two React trees fight over the same DOM nodes —
+ * the moment either side tries to update (e.g. user types in the
+ * Inspector → PHPPreviewEdit refetches → editor's React diffs children
+ * → finds DOM that the theme-bundle's React replaced) you get
+ * "removeChild: node is not a child" / "insertBefore" crashes.
+ *
+ * Inside the editor we leave the SSR'd PHP render output visible. It's
+ * bare (inline styles, no animations) but stable. The user gets the
+ * polished view on the actual frontend / save preview.
+ *
+ * Future improvement: port the original GCB's preload-cache pattern
+ * (window.gcbPreloadedBlocks) which feeds the editor pre-rendered
+ * polished HTML without React-tree contention. Tracked separately.
+ */
+function isWpEditor() {
+  if (typeof window === 'undefined') return false;
+  // wp.data.select('core/block-editor') exists in the editor JS bundle;
+  // not on the frontend. The check works in both the post editor and
+  // the site editor.
+  return typeof window.wp !== 'undefined' &&
+         typeof window.wp.blockEditor !== 'undefined';
+}
+
 function hydrateAll() {
+  if (isWpEditor()) return;
   const wrappers = document.querySelectorAll('[data-block-name]');
   wrappers.forEach((el) => {
     const blockName = el.getAttribute('data-block-name');
@@ -206,6 +236,10 @@ function hydrateAll() {
  * so the WP frontend gets the same nav + GitHub link + footer chrome.
  */
 function mountChrome() {
+  // Editor doesn't render header.php / footer.php (the placeholders
+  // don't exist there) so this is mostly a no-op in that context, but
+  // skip explicitly to avoid any future contention.
+  if (isWpEditor()) return;
   const headerEl = document.getElementById('gcb-site-header');
   if (headerEl) {
     createRoot(headerEl).render(<SiteHeader />);
