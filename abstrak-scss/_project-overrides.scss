@@ -47,3 +47,27 @@
     margin-left: 0;
     margin-right: 0;
 }
+
+/* ----------------------------------------------------------------------
+ * Editor-only: bypass the theme.json content-width clamp for abstrak
+ * blocks.
+ *
+ * theme.json sets layout.contentSize: 768px. WP applies that as
+ *   .block-editor-block-list__layout.is-root-container
+ *     > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+ *       max-width: 768px;
+ *       margin-left: auto !important;
+ *       margin-right: auto !important;
+ *     }
+ * which clamps every root-level block in the editor to 768px. The
+ * intent is to make page-body content readable, but abstrak-* blocks
+ * are full-bleed sections — they need the whole viewport.
+ *
+ * Override for our blocks only. Frontend is unaffected (this selector
+ * targets the editor-only `.block-editor-block-list__block` wrapper).
+ * ---------------------------------------------------------------------- */
+.block-editor-block-list__block[data-type^="gcb/abstrak-"] {
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
