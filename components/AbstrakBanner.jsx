@@ -67,10 +67,13 @@ export default function AbstrakBanner({ attributes = {} }) {
   const twitter  = (attributes.twitter  && attributes.twitter.url)  || SAMPLE.socials.twitter;
   const linkedin = (attributes.linkedin && attributes.linkedin.url) || SAMPLE.socials.linkedin;
 
+  const eyebrow = attributes.eyebrow || '';
+
   return (
     <div className="banner banner-style-4">
       <div className="container">
         <div className="banner-content">
+          {eyebrow && <span className="subtitle">{eyebrow}</span>}
           <HeadingTag className="title">{headingText}</HeadingTag>
           {body.split(/\n{2,}/).map((para, i) => (
             <p key={i}>{para}</p>
