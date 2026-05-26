@@ -1,11 +1,11 @@
 'use client';
 
 /**
- * AbstrakIconAccordion — heading + interactive accordion of icon items.
+ * SaasIconAccordion — heading + interactive accordion of icon items.
  *
- * Emits Abstrak's exact markup: a .why-choose-us wrapper containing a
+ * Emits Saas's exact markup: a .why-choose-us wrapper containing a
  * .section-heading and a Bootstrap .accordion. The bundled SCSS (which
- * includes both Bootstrap's .accordion-* defaults AND Abstrak's
+ * includes both Bootstrap's .accordion-* defaults AND Saas's
  * _why-choose.scss overrides) styles the result directly.
  *
  * Bootstrap's accordion JS isn't loaded — we use React state as the
@@ -15,8 +15,8 @@
  * settle into `.collapse` / `.collapse.show`. That's the same dance
  * Bootstrap's own collapse.js does — without bundling the JS.
  *
- * Block: gcb/abstrak-icon-accordion
- * Children: gcb/abstrak-icon-accordion-item
+ * Block: gcb/saas-icon-accordion
+ * Children: gcb/saas-icon-accordion-item
  */
 
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
@@ -41,11 +41,11 @@ const ICON_MAP = {
 
 const HEADING_LEVELS = new Set(['h2', 'h3', 'h4']);
 
-export default function AbstrakIconAccordion({ attributes = {}, innerBlocks = [] }) {
+export default function SaasIconAccordion({ attributes = {}, innerBlocks = [] }) {
   const { heading = { text: '', level: 'h3' }, intro = '' } = attributes;
 
   const items = innerBlocks
-    .filter((b) => b?.blockName === 'gcb/abstrak-icon-accordion-item')
+    .filter((b) => b?.blockName === 'gcb/saas-icon-accordion-item')
     .map((b, idx) => ({
       id:    `item-${idx}`,
       icon:  (b.attrs?.icon  || '').trim(),
@@ -135,7 +135,7 @@ function AccordionRow({ item, isOpen, onToggle }) {
  * This is a well-known pattern (Adam Argyle, web.dev, "Animating to
  * height auto"). It works in every evergreen browser.
  *
- * We still emit the Bootstrap class names on the outer so Abstrak's
+ * We still emit the Bootstrap class names on the outer so Saas's
  * own .accordion-collapse selectors continue to match — but layout +
  * animation comes from the inline grid style here, not from Bootstrap.
  */

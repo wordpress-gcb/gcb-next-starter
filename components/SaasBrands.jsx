@@ -1,15 +1,15 @@
 /**
- * AbstrakBrands — server-component wrapper. Resolves CPT data with a
- * sample fallback, delegates to AbstrakBrandsView for rendering.
+ * SaasBrands — server-component wrapper. Resolves CPT data with a
+ * sample fallback, delegates to SaasBrandsView for rendering.
  *
- * Brand CPT data shape (gcb-abstrak theme):
+ * Brand CPT data shape (gcb-saas theme):
  *   title.rendered  — brand name
  *   meta.logo       — image-control object
  *   meta.website    — url-control object
  */
 
 import { getCptCollection } from '@/lib/wpRestClient';
-import AbstrakBrandsView from './AbstrakBrandsView';
+import SaasBrandsView from './SaasBrandsView';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
@@ -24,7 +24,7 @@ const SAMPLE_BRANDS = [
   { id: 8, image: '/images/brand/brand-8.png', name: 'Brand 8' },
 ];
 
-export default async function AbstrakBrands({ attributes = {} }) {
+export default async function SaasBrands({ attributes = {} }) {
   const heading = {
     text:  attributes.heading?.text  || 'Used by teams building with GCB.',
     level: HEADING_LEVELS.has(attributes.heading?.level) ? attributes.heading.level : 'h2',
@@ -36,7 +36,7 @@ export default async function AbstrakBrands({ attributes = {} }) {
   const items = cptItems.length > 0 ? cptItems.map(mapCptToCard) : SAMPLE_BRANDS;
 
   return (
-    <AbstrakBrandsView
+    <SaasBrandsView
       heading={heading}
       subtitle={subtitle}
       description={description}

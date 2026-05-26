@@ -29,9 +29,9 @@
  *   - gcb-lite plugin active (provides Collection helper, post-fields).
  *   - A theme that registers project / testimonial / brand CPTs with the
  *     same field shapes the demo expects. (The example
- *     gcblite/examples/themes/gcb-abstrak theme does this.)
- *   - The five abstrak-* blocks registered as well (the example
- *     gcblite/examples/blocks/abstrak-* dirs cover this).
+ *     gcblite/examples/themes/gcb-saas-theme theme does this.)
+ *   - The five saas-* blocks registered as well (the example
+ *     gcblite/examples/blocks/saas-* dirs cover this).
  *
  * The seed itself doesn't install plugin / theme code — it only writes
  * content. Make sure code is in place before running.
@@ -152,21 +152,21 @@ $why_items = [
     gcb_seed_attrs_json(['icon' => 'FaServer',  'title' => 'REST-native, headless-ready',   'body' => 'Every block field is in /wp/v2/{type}.meta. Every CPT field too. Pull straight into any frontend without scraping HTML.']),
 ];
 $why_items_block = '';
-foreach ($why_items as $a) $why_items_block .= "<!-- wp:gcb/abstrak-icon-accordion-item $a /-->\n";
+foreach ($why_items as $a) $why_items_block .= "<!-- wp:gcb/saas-icon-accordion-item $a /-->\n";
 
 $why_section = <<<WHY
 <!-- wp:columns -->
 <div class="wp-block-columns">
 <!-- wp:column {"width":"42%"} -->
 <div class="wp-block-column" style="flex-basis:42%">
-<!-- wp:gcb/abstrak-section-text $why_text_attrs /-->
+<!-- wp:gcb/saas-section-text $why_text_attrs /-->
 </div>
 <!-- /wp:column -->
 
 <!-- wp:column {"width":"50%"} -->
 <div class="wp-block-column" style="flex-basis:50%">
-<!-- wp:gcb/abstrak-icon-accordion $why_accordion_attrs -->
-$why_items_block<!-- /wp:gcb/abstrak-icon-accordion -->
+<!-- wp:gcb/saas-icon-accordion $why_accordion_attrs -->
+$why_items_block<!-- /wp:gcb/saas-icon-accordion -->
 </div>
 <!-- /wp:column -->
 </div>
@@ -174,19 +174,19 @@ $why_items_block<!-- /wp:gcb/abstrak-icon-accordion -->
 WHY;
 
 $home_content = <<<EOT
-<!-- wp:gcb/abstrak-banner /-->
+<!-- wp:gcb/saas-banner /-->
 
-<!-- wp:gcb/abstrak-projects /-->
+<!-- wp:gcb/saas-projects /-->
 
-<!-- wp:gcb/abstrak-testimonials /-->
+<!-- wp:gcb/saas-testimonials /-->
 
-<!-- wp:gcb/abstrak-brands {"heading":{"text":"Used by teams building with GCB.","level":"h2"},"source":"latest","count":6} /-->
+<!-- wp:gcb/saas-brands {"heading":{"text":"Used by teams building with GCB.","level":"h2"},"source":"latest","count":6} /-->
 
 $why_section
 
-<!-- wp:gcb/abstrak-blog /-->
+<!-- wp:gcb/saas-blog /-->
 
-<!-- wp:gcb/abstrak-cta /-->
+<!-- wp:gcb/saas-cta /-->
 EOT;
 
 // KSES filters HTML-escape <!-- comments --> nested inside wp-block-column

@@ -1,5 +1,5 @@
 /**
- * SiteFooter — ported from Abstrak's FooterOne.js, slimmed for the GCB demo.
+ * SiteFooter — ported from Saas's FooterOne.js, slimmed for the GCB demo.
  *
  * Dropped from the original: newsletter form (no backend wired), the
  * 9-icon social row (GCB Lite is a code project, not a brand), Services

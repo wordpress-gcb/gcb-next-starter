@@ -128,11 +128,11 @@ export default async function BlockRenderer({ blocks, blockDefaults = {} }) {
 }
 
 /**
- * core/columns → Bootstrap .container > .row markup so Abstrak's CSS
+ * core/columns → Bootstrap .container > .row markup so Saas's CSS
  * lands in the layout context it expects. The .section-padding /
- * .single-portfolio-area shell mirrors Abstrak's project-details
+ * .single-portfolio-area shell mirrors Saas's project-details
  * template — that's the section type the wordpress-theme page is
- * patterned on, and it's where Abstrak ships its right padding /
+ * patterned on, and it's where Saas ships its right padding /
  * max-width / typography rules for .section-heading.
  *
  * If you're rendering a different layout shell (e.g. about-us with
@@ -144,7 +144,7 @@ function ColumnsRow({ block, blockDefaults }) {
   const columns = block.innerBlocks || [];
 
   // Resolve each column to its Bootstrap class first so we can detect
-  // common Abstrak patterns (5+6 portfolio split → add offset-xl-1 to
+  // common Saas patterns (5+6 portfolio split → add offset-xl-1 to
   // the 6-col, etc.) before rendering.
   const widths = columns.map((col) =>
     col?.attrs?.width ? widthToBootstrapCol(col.attrs.width) : 'col-lg'
@@ -174,7 +174,7 @@ function ColumnsRow({ block, blockDefaults }) {
  * real Bootstrap column class. Falls back to .col-lg (auto-share the
  * remaining row) when no width is set.
  *
- * Why .col-lg-N (not .col-md-N)? Abstrak's templates use the lg
+ * Why .col-lg-N (not .col-md-N)? Saas's templates use the lg
  * breakpoint, so columns stack below 992px — same behaviour as the
  * source theme. If you want them side-by-side earlier, swap to
  * .col-md-N here.
@@ -188,9 +188,9 @@ function ColumnInner({ block, blockDefaults, colClass }) {
 }
 
 /**
- * Add Abstrak's signature offsets to common column patterns.
+ * Add Saas's signature offsets to common column patterns.
  *
- * The 5+6 portfolio split in Abstrak's own ProjectDetails template uses
+ * The 5+6 portfolio split in Saas's own ProjectDetails template uses
  * `col-lg-6 offset-xl-1` on the second column — the extra 1/12 gap on
  * xl screens is what gives the layout its breathing room. WP doesn't
  * have an "offset" concept on core/column, so we infer it from the
@@ -201,7 +201,7 @@ function ColumnInner({ block, blockDefaults, colClass }) {
  *   col-lg-7 + col-lg-4  → second gets `col-lg-4 offset-xl-1` (mirror)
  *
  * Any pattern not recognised here just uses the raw col class. Add more
- * mappings as Abstrak's other layouts come into play.
+ * mappings as Saas's other layouts come into play.
  */
 function resolveColClasses(widths, index) {
   const base = widths[index];

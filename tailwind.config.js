@@ -8,13 +8,13 @@ export default {
   ],
   theme: {
     extend: {
-      // Abstrak palette — mirrors examples/themes/gcb-abstrak/theme.json in
+      // Saas palette — mirrors examples/themes/gcb-saas/theme.json in
       // the gcb-lite plugin so the React frontend and the WordPress block
       // editor use the same colour tokens. If you add a colour here, add
       // it to the theme too (and vice versa) — otherwise the editor's
       // colour picker shows values the frontend can't render.
       colors: {
-        abstrak: {
+        saas: {
           primary:   '#5956E9',
           'blue-shade': '#6865FF',
           link:      '#2522BA',
@@ -36,9 +36,9 @@ export default {
         },
       },
       backgroundImage: {
-        'abstrak-gradient-blue': 'linear-gradient(145.92deg, #5956E9 20.18%, #9991FF 76.9%)',
-        'abstrak-gradient-accent': 'linear-gradient(180deg, #FAB8C4 0%, #FFEDF0 100%)',
-        'abstrak-gradient-dark': 'linear-gradient(180deg, #27272E 0%, #303035 100%)',
+        'saas-gradient-blue': 'linear-gradient(145.92deg, #5956E9 20.18%, #9991FF 76.9%)',
+        'saas-gradient-accent': 'linear-gradient(180deg, #FAB8C4 0%, #FFEDF0 100%)',
+        'saas-gradient-dark': 'linear-gradient(180deg, #27272E 0%, #303035 100%)',
       },
       fontFamily: {
         // var() refs filled by next/font in app/layout.jsx so we get the

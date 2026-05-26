@@ -1,9 +1,9 @@
 /**
- * AbstrakProjects — server-component wrapper.
+ * SaasProjects — server-component wrapper.
  *
  * Resolves the data (CPT records or sample fallback), normalises the
  * heading/subtitle/description, then delegates rendering to
- * AbstrakProjectsView (a pure function component). The View is shared
+ * SaasProjectsView (a pure function component). The View is shared
  * with the WP theme's client-side hydration bundle, so the same render
  * happens in three places:
  *   - Next.js server (here, this wrapper)
@@ -12,12 +12,12 @@
  */
 
 import { getCptCollection } from '@/lib/wpRestClient';
-import AbstrakProjectsView from './AbstrakProjectsView';
+import SaasProjectsView from './SaasProjectsView';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
 // Fallback when the CPT is empty. Reskinned to look like real GCB-built
-// products rather than Abstrak's source agency portfolio.
+// products rather than Saas's source agency portfolio.
 const SAMPLE_PROJECTS = [
   { id: 13, image: '/images/project/project-1.png', title: 'Postwave CMS Marketing', category: ['SaaS site', 'Next.js'] },
   { id: 14, image: '/images/project/project-4.png', title: 'Beacon Analytics',       category: ['Web app', 'React'] },
@@ -25,7 +25,7 @@ const SAMPLE_PROJECTS = [
   { id: 16, image: '/images/project/project-3.png', title: 'Atlas Docs Hub',         category: ['Docs', 'MDX'] },
 ];
 
-export default async function AbstrakProjects({ attributes = {} }) {
+export default async function SaasProjects({ attributes = {} }) {
   const heading = {
     text:  attributes.heading?.text  || 'Selected work',
     level: HEADING_LEVELS.has(attributes.heading?.level) ? attributes.heading.level : 'h2',
@@ -37,7 +37,7 @@ export default async function AbstrakProjects({ attributes = {} }) {
   const items = cptItems.length > 0 ? cptItems.map(mapCptToCard) : SAMPLE_PROJECTS;
 
   return (
-    <AbstrakProjectsView
+    <SaasProjectsView
       heading={heading}
       subtitle={subtitle}
       description={description}
@@ -48,7 +48,7 @@ export default async function AbstrakProjects({ attributes = {} }) {
 
 /**
  * Normalise a WP REST project entity into the View's expected shape.
- * Mirrored on the PHP side in abstrak-projects/render.php so both
+ * Mirrored on the PHP side in saas-projects/render.php so both
  * paths produce identical data-props.
  */
 function mapCptToCard(entity) {

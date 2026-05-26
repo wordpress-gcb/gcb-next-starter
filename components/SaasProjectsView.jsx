@@ -1,8 +1,8 @@
 /**
- * AbstrakProjectsView — pure presentational. Plain function, no fetch.
+ * SaasProjectsView — pure presentational. Plain function, no fetch.
  *
- * Renders Abstrak's project grid given the resolved data. The data
- * shape matches what mapCptToCard produces in AbstrakProjects (the
+ * Renders Saas's project grid given the resolved data. The data
+ * shape matches what mapCptToCard produces in SaasProjects (the
  * server-component wrapper). The theme bundle's hydration layer reads
  * the same shape out of the wrapper's data-props attribute.
  *
@@ -15,7 +15,7 @@ import { img } from './imageBase';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
-export default function AbstrakProjectsView({
+export default function SaasProjectsView({
   heading,
   subtitle,
   description,

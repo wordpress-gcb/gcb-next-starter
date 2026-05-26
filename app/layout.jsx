@@ -1,11 +1,11 @@
-// Abstrak's full visual identity, bundled verbatim from the purchased
-// theme's SCSS tree at /abstrak-scss. The order matters:
+// Saas's full visual identity, bundled verbatim from the purchased
+// theme's SCSS tree at /saas-scss. The order matters:
 //   1. Bootstrap 5 reset + grid (.row / .col-lg-* etc.)
-//   2. Abstrak's own SCSS — its CSS variables override Bootstrap defaults
+//   2. Saas's own SCSS — its CSS variables override Bootstrap defaults
 //   3. Our own globals.css last (Tailwind directives + small additions)
 // next-app-router supports SCSS imports out of the box; sass is a devDep.
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../abstrak-scss/app.scss';
+import '../saas-scss/app.scss';
 import './globals.css';
 
 import { DM_Sans, Poppins } from 'next/font/google';
@@ -13,7 +13,7 @@ import { DM_Sans, Poppins } from 'next/font/google';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 
-// Abstrak design tokens — same fonts the gcb-abstrak theme.json declares,
+// Saas design tokens — same fonts the gcb-saas theme.json declares,
 // loaded via next/font so we get the self-hosting + font-display:swap
 // behaviour automatically.
 const dmSans = DM_Sans({
@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
       data-bs-theme="light"
       className={`${dmSans.variable} ${poppins.variable}`}
     >
-      <body className="font-sans bg-white text-abstrak-body antialiased">
+      <body className="font-sans bg-white text-saas-body antialiased">
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />

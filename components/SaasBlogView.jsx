@@ -1,5 +1,5 @@
 /**
- * AbstrakBlogView — pure presentational. Pair with AbstrakBlog
+ * SaasBlogView — pure presentational. Pair with SaasBlog
  * (server-component wrapper) for fetch + sample fallback.
  *
  * Items shape: { id, title, excerpt, thumb, link }
@@ -10,7 +10,7 @@ import { img } from './imageBase';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
-export default function AbstrakBlogView({
+export default function SaasBlogView({
   heading,
   subtitle,
   description,
@@ -48,7 +48,7 @@ export default function AbstrakBlogView({
 }
 
 function BlogListItem({ post, index }) {
-  // Even cards get .border-start — matches Abstrak's BlogListOne stripe.
+  // Even cards get .border-start — matches Saas's BlogListOne stripe.
   const borderClass = index % 2 === 1 ? 'border-start' : '';
   return (
     <div className={`blog-list ${borderClass}`}>

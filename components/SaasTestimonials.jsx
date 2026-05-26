@@ -1,10 +1,10 @@
 /**
- * AbstrakTestimonials — server-component wrapper.
+ * SaasTestimonials — server-component wrapper.
  *
  * Resolves CPT records or sample fallback, normalises, delegates to
- * AbstrakTestimonialsView.
+ * SaasTestimonialsView.
  *
- * Testimonial CPT data shape (gcb-abstrak theme):
+ * Testimonial CPT data shape (gcb-saas theme):
  *   title.rendered             — author name
  *   meta.quote                 — string
  *   meta.author_name           — string
@@ -15,7 +15,7 @@
  */
 
 import { getCptCollection } from '@/lib/wpRestClient';
-import AbstrakTestimonialsView from './AbstrakTestimonialsView';
+import SaasTestimonialsView from './SaasTestimonialsView';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
@@ -49,7 +49,7 @@ const SAMPLE_TESTIMONIALS = [
   },
 ];
 
-export default async function AbstrakTestimonials({ attributes = {} }) {
+export default async function SaasTestimonials({ attributes = {} }) {
   const heading = {
     text:  attributes.heading?.text  || 'What teams say after shipping with it',
     level: HEADING_LEVELS.has(attributes.heading?.level) ? attributes.heading.level : 'h2',
@@ -61,7 +61,7 @@ export default async function AbstrakTestimonials({ attributes = {} }) {
   const items = cptItems.length > 0 ? cptItems.map(mapCptToCard) : SAMPLE_TESTIMONIALS;
 
   return (
-    <AbstrakTestimonialsView
+    <SaasTestimonialsView
       heading={heading}
       subtitle={subtitle}
       description={description}

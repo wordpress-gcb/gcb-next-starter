@@ -68,7 +68,7 @@ export default async function CatchAllPage({ params }) {
 
   // No <main> chrome here on purpose: the section blocks own their own
   // .section-padding / .container layout so the page reads exactly like
-  // Abstrak's own marketing pages. A max-w wrapper would collapse the
+  // Saas's own marketing pages. A max-w wrapper would collapse the
   // full-bleed dark CTA + bubble field down to a column.
   return (
     <main>

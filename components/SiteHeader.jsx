@@ -1,12 +1,12 @@
 /**
- * SiteHeader — ported from Abstrak's HeaderOne.js (src/common/header/).
+ * SiteHeader — ported from Saas's HeaderOne.js (src/common/header/).
  *
  * Stripped to what the GCB demo needs: logo, simple nav (Home / Projects
  * / Docs / Blog), GitHub icon link in the action slot. No mega-menu, no
  * offcanvas — those belong to the multi-page agency demo, not a
  * single-purpose plugin showcase.
  *
- * Sticky behaviour kept (Abstrak's StickyHeader hook reimplemented inline
+ * Sticky behaviour kept (Saas's StickyHeader hook reimplemented inline
  * as a tiny scroll listener) so the header pins to the viewport on scroll.
  *
  * Bootstrap is bundled — `.container`, `.d-none.d-lg-block` etc. resolve
@@ -88,7 +88,7 @@ export default function SiteHeader() {
 }
 
 /**
- * Re-implementation of Abstrak's StickyHeader hook — toggles a boolean
+ * Re-implementation of Saas's StickyHeader hook — toggles a boolean
  * once the scrollY crosses `offset`. Returns a state-driven boolean so
  * the parent re-renders.
  */

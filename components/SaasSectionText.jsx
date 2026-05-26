@@ -1,5 +1,5 @@
 /**
- * AbstrakSectionText — emits the same markup shape Abstrak's source
+ * SaasSectionText — emits the same markup shape Saas's source
  * ProjectDetails.js uses:
  *
  *   <>
@@ -21,7 +21,7 @@
  * component just emits its content as direct siblings within that
  * column.
  *
- * Block: gcb/abstrak-section-text
+ * Block: gcb/saas-section-text
  *
  * Attributes:
  *   subtitle_left:  string         → first .subtitle span
@@ -33,7 +33,7 @@
 
 const HEADING_LEVELS = new Set(['h2', 'h3', 'h4']);
 
-export default function AbstrakSectionText({ attributes = {} }) {
+export default function SaasSectionText({ attributes = {} }) {
   const {
     subtitle_left:  subtitleLeft  = '',
     subtitle_right: subtitleRight = '',

@@ -1,14 +1,14 @@
 /**
- * AbstrakCta — wired to WP. Markup from Abstrak's CtaLayoutOne.js;
+ * SaasCta — wired to WP. Markup from Saas's CtaLayoutOne.js;
  * heading + body + CTA all read from the block's attrs with sample
  * fallbacks. Background bubbles + foreground images stay fixed
- * (they're Abstrak's brand identity, not authored content).
+ * (they're Saas's brand identity, not authored content).
  *
  * Attributes (all optional):
  *   heading: { text, level }                  — heading-level field
  *   body:    string                           — textarea (not currently
  *                                               rendered by the CTA layout
- *                                               itself; Abstrak shows the
+ *                                               itself; Saas shows the
  *                                               heading + subtitle only,
  *                                               so we wire `body` as a
  *                                               subtitle override)
@@ -26,14 +26,14 @@ const SAMPLE = {
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
-export default function AbstrakCta({ attributes = {} }) {
+export default function SaasCta({ attributes = {} }) {
   const heading = attributes.heading || {};
   const HeadingTag = HEADING_LEVELS.has(heading.level) ? heading.level : 'h2';
   const headingText = heading.text || SAMPLE.heading;
 
   // The CTA's "subtitle" slot above the headline is short — we reuse
   // `body` for that. Authors who want full prose under the heading
-  // would need a richer CTA variant; this matches Abstrak's layout.
+  // would need a richer CTA variant; this matches Saas's layout.
   const subtitle = attributes.body || SAMPLE.subtitle;
 
   const cta = attributes.cta || {};

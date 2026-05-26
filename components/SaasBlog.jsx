@@ -1,12 +1,12 @@
 /**
- * AbstrakBlog — server-component wrapper.
+ * SaasBlog — server-component wrapper.
  *
  * Pulls from WP standard posts (post type 'posts') via getCptCollection.
  * Falls back to two sample cards when there are no published posts yet.
  */
 
 import { getCptCollection } from '@/lib/wpRestClient';
-import AbstrakBlogView from './AbstrakBlogView';
+import SaasBlogView from './SaasBlogView';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
@@ -27,7 +27,7 @@ const SAMPLE_POSTS = [
   },
 ];
 
-export default async function AbstrakBlog({ attributes = {} }) {
+export default async function SaasBlog({ attributes = {} }) {
   const heading = {
     text:  attributes.heading?.text  || 'From the blog',
     level: HEADING_LEVELS.has(attributes.heading?.level) ? attributes.heading.level : 'h2',
@@ -35,13 +35,13 @@ export default async function AbstrakBlog({ attributes = {} }) {
   const subtitle    = attributes.subtitle || 'Latest writing';
   const description = attributes.intro    || 'Tips, patterns, and release notes from the team building GCB and the headless Gutenberg stack around it.';
 
-  // Default to 2 posts to match Abstrak's 2-up layout if count not set.
+  // Default to 2 posts to match Saas's 2-up layout if count not set.
   const fetchAttrs = { ...attributes, count: attributes.count || 2 };
   const cptItems   = await getCptCollection('posts', fetchAttrs).catch(() => []);
   const items = cptItems.length > 0 ? cptItems.map(mapPostToCard) : SAMPLE_POSTS;
 
   return (
-    <AbstrakBlogView
+    <SaasBlogView
       heading={heading}
       subtitle={subtitle}
       description={description}

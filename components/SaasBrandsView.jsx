@@ -1,5 +1,5 @@
 /**
- * AbstrakBrandsView — pure presentational. Pair with AbstrakBrands (the
+ * SaasBrandsView — pure presentational. Pair with SaasBrands (the
  * server-component wrapper) for fetch + sample fallback. See that file
  * for the dual-render rationale.
  *
@@ -10,7 +10,7 @@ import { img } from './imageBase';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
-export default function AbstrakBrandsView({
+export default function SaasBrandsView({
   heading,
   subtitle,
   description,

@@ -16,14 +16,14 @@ export default function RegistryDoc() {
       <H2 id="define">Define</H2>
 
       <Pre lang="js">{`// components/registry.js
-import AbstrakBanner       from './AbstrakBanner';
-import AbstrakProjects     from './AbstrakProjects';
-import AbstrakTestimonials from './AbstrakTestimonials';
+import SaasBanner       from './SaasBanner';
+import SaasProjects     from './SaasProjects';
+import SaasTestimonials from './SaasTestimonials';
 
 export const WP_BLOCK_REGISTRY = {
-  'gcb/abstrak-banner':       AbstrakBanner,
-  'gcb/abstrak-projects':     AbstrakProjects,
-  'gcb/abstrak-testimonials': AbstrakTestimonials,
+  'gcb/saas-banner':       SaasBanner,
+  'gcb/saas-projects':     SaasProjects,
+  'gcb/saas-testimonials': SaasTestimonials,
 };`}</Pre>
 
       <H2 id="renderer">The renderer</H2>

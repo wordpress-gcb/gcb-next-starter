@@ -1,6 +1,6 @@
 /**
- * AbstrakTestimonialsView — pure presentational. Pair with
- * AbstrakTestimonials (server-component wrapper) for fetch + sample
+ * SaasTestimonialsView — pure presentational. Pair with
+ * SaasTestimonials (server-component wrapper) for fetch + sample
  * fallback.
  *
  * Items shape:
@@ -11,7 +11,7 @@ import { img } from './imageBase';
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
-export default function AbstrakTestimonialsView({
+export default function SaasTestimonialsView({
   heading,
   subtitle,
   description,

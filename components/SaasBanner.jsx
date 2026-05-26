@@ -1,13 +1,13 @@
 /**
- * AbstrakBanner — wired to WP. Reads from the block's `attributes`
- * (Inspector controls in WP admin) and falls back to Abstrak's sample
+ * SaasBanner — wired to WP. Reads from the block's `attributes`
+ * (Inspector controls in WP admin) and falls back to Saas's sample
  * copy when a field is empty, so a freshly-inserted block already looks
  * fully designed in the editor preview. Authors then replace the bits
  * they care about.
  *
- * Markup ported verbatim from Abstrak's BannerFour.js (.banner
+ * Markup ported verbatim from Saas's BannerFour.js (.banner
  * .banner-style-4 and everything inside). The CSS at
- * abstrak-scss/template/_banner.scss styles it.
+ * saas-scss/template/_banner.scss styles it.
  *
  * Attributes (all optional — empty falls back to sample):
  *   heading:       { text, level }                — heading-level field
@@ -25,7 +25,7 @@
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from 'react-icons/fa';
 import { img } from './imageBase';
 
-// Abstrak's hero sample copy — used when the matching attribute is
+// Saas's hero sample copy — used when the matching attribute is
 // empty. Means an unedited block in the editor previews fully styled
 // rather than blank.
 const SAMPLE = {
@@ -43,7 +43,7 @@ const SAMPLE = {
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
-export default function AbstrakBanner({ attributes = {} }) {
+export default function SaasBanner({ attributes = {} }) {
   const heading = attributes.heading || {};
   const HeadingTag = HEADING_LEVELS.has(heading.level) ? heading.level : 'h1';
   const headingText = heading.text || SAMPLE.heading;
@@ -52,7 +52,7 @@ export default function AbstrakBanner({ attributes = {} }) {
 
   // image field stores { url, alt, focalPoint, size, customWidth, ... }
   // Honour .url + .alt only here — focalPoint etc. only matter when the
-  // hero crops; Abstrak's hero is full-image so they don't apply.
+  // hero crops; Saas's hero is full-image so they don't apply.
   const image = attributes.image && attributes.image.url
     ? attributes.image
     : { url: SAMPLE.image, alt: '' };

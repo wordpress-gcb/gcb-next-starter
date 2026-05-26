@@ -1,7 +1,7 @@
 /*
- * Project-specific overrides of Bootstrap / Abstrak rules.
+ * Project-specific overrides of Bootstrap / Saas rules.
  *
- * Why this file exists: editing the Abstrak source SCSS in place loses
+ * Why this file exists: editing the Saas source SCSS in place loses
  * the ability to bring in upstream updates if Axil ships any. Same for
  * Bootstrap. Anything project-specific lives here and is imported LAST
  * from app.scss so it wins the cascade.
@@ -33,7 +33,7 @@
 /* ----------------------------------------------------------------------
  * .section-heading.heading-left p
  *
- * Abstrak default:
+ * Saas default:
  *   .section-heading p { width: 50%; margin: 0 auto 40px; }
  * intended for centred hero-style headings where a narrow centred
  * paragraph reads as intentional. The `.heading-left` modifier only
@@ -49,7 +49,7 @@
 }
 
 /* ----------------------------------------------------------------------
- * Editor-only: bypass the theme.json content-width clamp for abstrak
+ * Editor-only: bypass the theme.json content-width clamp for saas
  * blocks.
  *
  * theme.json sets layout.contentSize: 768px. WP applies that as
@@ -60,13 +60,13 @@
  *       margin-right: auto !important;
  *     }
  * which clamps every root-level block in the editor to 768px. The
- * intent is to make page-body content readable, but abstrak-* blocks
+ * intent is to make page-body content readable, but saas-* blocks
  * are full-bleed sections — they need the whole viewport.
  *
  * Override for our blocks only. Frontend is unaffected (this selector
  * targets the editor-only `.block-editor-block-list__block` wrapper).
  * ---------------------------------------------------------------------- */
-.block-editor-block-list__block[data-type^="gcb/abstrak-"] {
+.block-editor-block-list__block[data-type^="gcb/saas-"] {
     max-width: none !important;
     margin-left: 0 !important;
     margin-right: 0 !important;

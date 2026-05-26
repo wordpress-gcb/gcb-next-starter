@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 /**
- * Build the gcb-abstrak theme bundle.
+ * Build the gcb-saas-theme theme bundle.
  *
  * Compiles two outputs:
- *   - build/theme.js   — React + the Abstrak View components + the
+ *   - build/theme.js   — React + the Saas View components + the
  *                        hydration scanner. Loaded by the theme on
  *                        every frontend + editor request.
- *   - build/theme.css  — Bootstrap 5.3 + Abstrak SCSS + project
+ *   - build/theme.css  — Bootstrap 5.3 + Saas SCSS + project
  *                        overrides, concatenated and minified.
  *
  * Output goes to the gcb-lite plugin's example theme directory:
- *   ../gcblitewp/wp-content/plugins/gcb-lite/examples/themes/gcb-abstrak/build/
+ *   ../gcblitewp/wp-content/plugins/gcb-lite/examples/themes/gcb-saas-theme/build/
  *
  * Why outside this repo: the theme zip shipped via the Playground
  * blueprint (and the Kinsta theme deploy) is built from that path. One
@@ -37,7 +37,7 @@ const repoRoot = resolve(here, '..');
 // with GCB_THEME_OUT env var if your layout differs.
 const themeOut = process.env.GCB_THEME_OUT || resolve(
   repoRoot,
-  '../gcblitewp/wp-content/plugins/gcb-lite/examples/themes/gcb-abstrak/build',
+  '../gcblitewp/wp-content/plugins/gcb-lite/examples/themes/gcb-saas-theme/build',
 );
 
 async function ensureDir(p) {

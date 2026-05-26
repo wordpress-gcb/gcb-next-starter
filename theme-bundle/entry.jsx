@@ -1,8 +1,8 @@
 /**
  * Theme bundle entry point.
  *
- * Scans the page for SSR'd `[data-block-name^="abstrak-"]` wrappers
- * emitted by the gcb-lite abstrak-* block render.php files, parses each
+ * Scans the page for SSR'd `[data-block-name^="saas-"]` wrappers
+ * emitted by the gcb-lite saas-* block render.php files, parses each
  * wrapper's `data-props` JSON, normalises the props to the shape each
  * View component expects, and renders the component into the wrapper.
  *
@@ -11,7 +11,7 @@
  * flattened card shape (e.g. image, category[]). The ADAPTERS map
  * below does that translation — one function per block name.
  *
- * This file is loaded by gcb-abstrak's functions.php as a
+ * This file is loaded by gcb-saas's functions.php as a
  * `wp_enqueue_script` on both frontend and editor contexts. Built to a
  * single self-contained file by theme-bundle/build.mjs.
  */
@@ -21,14 +21,14 @@ import { createRoot } from 'react-dom/client';
 // Static imports so esbuild bundles everything — no per-component network
 // requests means Playground compatibility (PHP-to-network is blocked but
 // same-origin JS is fine).
-import AbstrakBanner          from '@/components/AbstrakBanner';
-import AbstrakBrandsView      from '@/components/AbstrakBrandsView';
-import AbstrakProjectsView    from '@/components/AbstrakProjectsView';
-import AbstrakTestimonialsView from '@/components/AbstrakTestimonialsView';
-import AbstrakBlogView        from '@/components/AbstrakBlogView';
-import AbstrakCta             from '@/components/AbstrakCta';
-import AbstrakIconAccordion   from '@/components/AbstrakIconAccordion';
-import AbstrakSectionText     from '@/components/AbstrakSectionText';
+import SaasBanner          from '@/components/SaasBanner';
+import SaasBrandsView      from '@/components/SaasBrandsView';
+import SaasProjectsView    from '@/components/SaasProjectsView';
+import SaasTestimonialsView from '@/components/SaasTestimonialsView';
+import SaasBlogView        from '@/components/SaasBlogView';
+import SaasCta             from '@/components/SaasCta';
+import SaasIconAccordion   from '@/components/SaasIconAccordion';
+import SaasSectionText     from '@/components/SaasSectionText';
 import SiteHeader             from '@/components/SiteHeader';
 import SiteFooter             from '@/components/SiteFooter';
 
@@ -41,8 +41,8 @@ import SiteFooter             from '@/components/SiteFooter';
  * only blocks like banner / cta), the adapter is a passthrough.
  */
 const ADAPTERS = {
-  'abstrak-banner': (raw) => ({
-    // AbstrakBanner takes { attributes }, so wrap. Banner's data-props
+  'saas-banner': (raw) => ({
+    // SaasBanner takes { attributes }, so wrap. Banner's data-props
     // is already keyed like `attributes.*` would be.
     attributes: {
       eyebrow:       raw.eyebrow || '',
@@ -54,7 +54,7 @@ const ADAPTERS = {
     },
   }),
 
-  'abstrak-projects': (raw) => ({
+  'saas-projects': (raw) => ({
     heading:     raw.heading,
     subtitle:    raw.subtitle || 'Built with GCB',
     description: raw.intro    || 'Real sites running typed-field Gutenberg blocks rendered through a React frontend. Same component in the editor and on the live page.',
@@ -67,7 +67,7 @@ const ADAPTERS = {
     })),
   }),
 
-  'abstrak-brands': (raw) => ({
+  'saas-brands': (raw) => ({
     heading:     raw.heading,
     subtitle:    raw.subtitle    || 'In production',
     description: raw.description || 'Marketing sites, SaaS dashboards, editorial publications — all rendering from the same typed Gutenberg blocks.',
@@ -79,7 +79,7 @@ const ADAPTERS = {
     })),
   }),
 
-  'abstrak-testimonials': (raw) => ({
+  'saas-testimonials': (raw) => ({
     heading:     raw.heading,
     subtitle:    raw.subtitle    || 'Field reports',
     description: raw.description || 'Frontend engineers and editors talking about the editor-frontend parity story and the typed-field workflow.',
@@ -94,7 +94,7 @@ const ADAPTERS = {
     })),
   }),
 
-  'abstrak-blog': (raw) => ({
+  'saas-blog': (raw) => ({
     heading:     raw.heading,
     subtitle:    raw.subtitle    || 'Latest writing',
     description: raw.intro       || 'Tips, patterns, and release notes from the team building GCB and the headless Gutenberg stack around it.',
@@ -107,29 +107,29 @@ const ADAPTERS = {
     })),
   }),
 
-  'abstrak-cta': (raw) => ({ attributes: raw }),
+  'saas-cta': (raw) => ({ attributes: raw }),
 
-  'abstrak-section-text': (raw) => ({ attributes: raw }),
+  'saas-section-text': (raw) => ({ attributes: raw }),
 
-  'abstrak-icon-accordion': (raw) => ({
+  'saas-icon-accordion': (raw) => ({
     attributes: raw,
     innerBlocks: raw.innerBlocks || [],
   }),
 };
 
 const REGISTRY = {
-  'abstrak-banner':          AbstrakBanner,
-  'abstrak-projects':        AbstrakProjectsView,
-  'abstrak-testimonials':    AbstrakTestimonialsView,
-  'abstrak-brands':          AbstrakBrandsView,
-  'abstrak-blog':            AbstrakBlogView,
-  'abstrak-cta':             AbstrakCta,
-  'abstrak-icon-accordion':  AbstrakIconAccordion,
-  'abstrak-section-text':    AbstrakSectionText,
+  'saas-banner':          SaasBanner,
+  'saas-projects':        SaasProjectsView,
+  'saas-testimonials':    SaasTestimonialsView,
+  'saas-brands':          SaasBrandsView,
+  'saas-blog':            SaasBlogView,
+  'saas-cta':             SaasCta,
+  'saas-icon-accordion':  SaasIconAccordion,
+  'saas-section-text':    SaasSectionText,
 };
 
 /**
- * Find all abstrak-* wrappers on the page and hydrate each one.
+ * Find all saas-* wrappers on the page and hydrate each one.
  *
  * The wrapper's outer tag + classes are SSR'd by render.php. We render
  * INTO the existing wrapper (not replace it) so the outer attributes
@@ -157,7 +157,7 @@ const ROOTS = new WeakMap();      // el → ReactRoot
 const LAST_PROPS = new WeakMap(); // el → JSON.stringify(props) we last rendered
 
 /**
- * Editor detection. We hydrate the polished Abstrak components ONLY on
+ * Editor detection. We hydrate the polished Saas components ONLY on
  * the public frontend, NOT inside the WP block editor.
  *
  * Why: the editor's own React tree (via gcb-lite's PHPPreviewEdit)
