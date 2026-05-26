@@ -238,7 +238,16 @@ function bootAll() {
 function watchForNewBlocks() {
   if (typeof MutationObserver === 'undefined') return;
   const observer = new MutationObserver(() => hydrateAll());
-  observer.observe(document.body, { childList: true, subtree: true });
+  // childList: new blocks appearing (e.g. editor inserts a block).
+  // attributes (filtered to data-props): existing block's typed props
+  //   change as the user edits in the Inspector — that's the live-edit
+  //   signal we need to catch in the editor.
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['data-props'],
+  });
 }
 
 if (typeof document !== 'undefined') {
