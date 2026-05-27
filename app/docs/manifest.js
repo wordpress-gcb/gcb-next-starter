@@ -33,6 +33,12 @@ export const docsManifest = [
     ],
   },
   {
+    section: 'AI workflows',
+    items: [
+      { href: '/docs/ai',                 title: 'Abilities + agents' },
+    ],
+  },
+  {
     section: 'Headless rendering',
     items: [
       { href: '/docs/headless',           title: 'Overview' },
