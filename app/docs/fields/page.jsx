@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { H1, H2, H3, P, Code, Pre, Callout } from '@/components/DocsArticle';
+import ControlRef from '@/components/ControlRef';
 
 export const metadata = { title: 'GCB Lite — Field reference' };
 
@@ -41,7 +42,7 @@ export default function FieldReference() {
       {/* ====================================================== */}
       <H2 id="text">Text</H2>
 
-      <H3 id="text-control"><Code>text</Code></H3>
+      <H3 id="text-control"><ControlRef type="text"><Code>text</Code></ControlRef></H3>
       <P>Single-line text input.</P>
       <P><strong>Stores:</strong> <Code>string</Code></P>
       <P><strong>Options:</strong> <Code>placeholder</Code></P>
@@ -103,11 +104,11 @@ export default function FieldReference() {
       {/* ====================================================== */}
       <H2 id="choice">Choice</H2>
 
-      <H3 id="toggle-control"><Code>toggle</Code></H3>
+      <H3 id="toggle-control"><ControlRef type="toggle"><Code>toggle</Code></ControlRef></H3>
       <P>Single on/off switch.</P>
       <P><strong>Stores:</strong> <Code>boolean</Code></P>
 
-      <H3 id="checkbox-control"><Code>checkbox</Code></H3>
+      <H3 id="checkbox-control"><ControlRef type="checkbox"><Code>checkbox</Code></ControlRef></H3>
       <P>Single boolean. Same data as <Code>toggle</Code>; checkbox UI instead of a switch.</P>
       <P><strong>Stores:</strong> <Code>boolean</Code></P>
 
@@ -199,7 +200,7 @@ export default function FieldReference() {
       {/* ====================================================== */}
       <H2 id="media">Media</H2>
 
-      <H3 id="image-control"><Code>image</Code></H3>
+      <H3 id="image-control"><ControlRef type="image"><Code>image</Code></ControlRef></H3>
       <P>
         Image picker with focal-point + size + custom-width + repeat +
         fixed-background controls in a popover. Built on{' '}
@@ -294,7 +295,7 @@ export default function FieldReference() {
       {/* ====================================================== */}
       <H2 id="link">Links &amp; relationships</H2>
 
-      <H3 id="url-control"><Code>url</Code></H3>
+      <H3 id="url-control"><ControlRef type="url"><Code>url</Code></ControlRef></H3>
       <P>
         Link picker. In the block Inspector sidebar this uses{' '}
         <Code>@wordpress/block-editor</Code>&rsquo;s <Code>LinkControl</Code>{' '}
@@ -304,7 +305,7 @@ export default function FieldReference() {
       <P><strong>Stores:</strong>{' '}
         <Code>{`{ url, text, opensInNewTab }`}</Code></P>
 
-      <H3 id="post-object-control"><Code>post-object</Code></H3>
+      <H3 id="post-object-control"><ControlRef type="post-object"><Code>post-object</Code></ControlRef></H3>
       <P>
         Searchable post picker with optional post-type + taxonomy
         filters. Drag-reorderable in multi-select mode.
@@ -358,7 +359,7 @@ export default function FieldReference() {
       {/* ====================================================== */}
       <H2 id="dimension">Typography &amp; dimension</H2>
 
-      <H3 id="heading-level-control"><Code>heading-level</Code></H3>
+      <H3 id="heading-level-control"><ControlRef type="heading"><Code>heading-level</Code></ControlRef></H3>
       <P>
         Compound input: heading text plus a level dropdown (H1–H6, P,
         DIV, SPAN). Mirrors WP&rsquo;s <Code>UnitControl</Code> shape — text
@@ -391,7 +392,7 @@ export default function FieldReference() {
       {/* ====================================================== */}
       <H2 id="composite">Composite</H2>
 
-      <H3 id="repeater-control"><Code>repeater</Code></H3>
+      <H3 id="repeater-control"><ControlRef type="repeater"><Code>repeater</Code></ControlRef></H3>
       <P>
         Inspector-side repeater — an array of rows, each row a
         compound of any sub-control types. Drag-reorderable; rows

@@ -30,3 +30,23 @@
 repeater {
   display: none;
 }
+
+/*
+ * Embed mode — set on <body> by EmbedMode.jsx when ?embed=1. Used by
+ * the docs hover-preview iframe to show just the docs article content,
+ * no site chrome and no docs sidebar. The article column also widens
+ * to use the full container.
+ */
+body.is-embed-mode .header,
+body.is-embed-mode footer,
+body.is-embed-mode aside {
+  display: none !important;
+}
+body.is-embed-mode .container {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+body.is-embed-mode .container > .row > [class^="col-"] {
+  flex: 0 0 100%;
+  max-width: 100%;
+}

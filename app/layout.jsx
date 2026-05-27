@@ -10,8 +10,11 @@ import './globals.css';
 
 import { DM_Sans, Poppins } from 'next/font/google';
 
+import { Suspense } from 'react';
+
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
+import EmbedMode from '@/components/EmbedMode';
 
 // Saas design tokens — same fonts the gcb-saas theme.json declares,
 // loaded via next/font so we get the self-hosting + font-display:swap
@@ -49,6 +52,14 @@ export default function RootLayout({ children }) {
       className={`${dmSans.variable} ${poppins.variable}`}
     >
       <body className="font-sans bg-white text-saas-body antialiased">
+        {/*
+          EmbedMode reads ?embed=1 and toggles a body class so the
+          docs hover-preview iframe can hide chrome via CSS rules in
+          globals.css. useSearchParams requires a Suspense boundary.
+        */}
+        <Suspense fallback={null}>
+          <EmbedMode />
+        </Suspense>
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />
