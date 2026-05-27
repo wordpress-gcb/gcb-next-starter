@@ -345,6 +345,97 @@
 		}
 	}
 
+	// Docs details block — appears between rendered value and raw JSON.
+	// Pulled from docs/controls/{type}.json on the plugin side (see
+	// render.php $render_control_docs). Reads as a docs page in
+	// miniature so the rendered field sits next to its own reference.
+	&__docs {
+		margin-top: 0.75rem;
+		font-size: 0.875rem;
+
+		summary {
+			cursor: pointer;
+			color: #525260;
+			font-size: 0.75rem;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+		}
+	}
+	&__docs-body {
+		margin-top: 0.5rem;
+		padding: 0.75rem 1rem;
+		background: #fafafa;
+		border-radius: 6px;
+		border: 1px solid #ececec;
+	}
+	&__docs-desc {
+		margin: 0 0 0.5rem;
+		color: #1e1e1e;
+	}
+	&__docs-stored {
+		margin: 0 0 0.75rem;
+		font-size: 0.875rem;
+		color: #525260;
+
+		strong {
+			color: #1e1e1e;
+			font-weight: 600;
+		}
+	}
+	&__docs-h {
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: #525260;
+		margin: 1rem 0 0.5rem;
+	}
+	&__docs-list {
+		margin: 0 0 0.5rem 1rem;
+		padding: 0;
+		color: #1e1e1e;
+
+		li {
+			margin-bottom: 0.25rem;
+		}
+	}
+	&__docs-config {
+		margin: 0;
+
+		dt {
+			margin-top: 0.5rem;
+			color: #1e1e1e;
+
+			code {
+				background: #fff;
+				border: 1px solid #ececec;
+				border-radius: 3px;
+				padding: 0.05rem 0.35rem;
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+			}
+		}
+		dd {
+			margin: 0.15rem 0 0 0;
+			color: #525260;
+		}
+	}
+	&__docs-type {
+		font-size: 0.75rem;
+		color: #525260;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		margin-left: 0.35rem;
+	}
+	&__docs-default {
+		font-size: 0.75rem;
+		color: #525260;
+		margin-left: 0.5rem;
+
+		&::before {
+			content: "·";
+			margin-right: 0.5rem;
+		}
+	}
+
 	// On narrow screens, stack the head + value vertically.
 	@media (max-width: 720px) {
 		&__field {
