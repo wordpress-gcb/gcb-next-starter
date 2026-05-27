@@ -38,7 +38,13 @@ import SaasCta               from '../../components/SaasCta';
 import SaasSectionText       from '../../components/SaasSectionText';
 import SaasIconAccordion     from '../../components/SaasIconAccordion';
 import SaasIconAccordionItem from '../../components/SaasIconAccordionItem';
-import FieldShowcase         from '../../components/FieldShowcase';
+
+// Note: gcb/field-showcase is NOT in the registry. It's a server-rendered
+// demo+QA block — the plugin's render.php produces the full HTML, and
+// BlockRenderer routes unregistered gcb/* blocks through the
+// /gcblite/v1/render-batch endpoint, which runs the same render.php and
+// returns the markup as-is. Adding a React passthrough here would only
+// duplicate work and lose the server-resolved icon SVGs + ref-field titles.
 
 export const WP_BLOCK_REGISTRY = {
   // Reference
@@ -63,8 +69,4 @@ export const WP_BLOCK_REGISTRY = {
   'gcb/saas-section-text':         SaasSectionText,
   'gcb/saas-icon-accordion':       SaasIconAccordion,
   'gcb/saas-icon-accordion-item':  SaasIconAccordionItem,
-
-  // Demo + QA: every gcb-lite control type, server-rendered. The React
-  // side just inherits the SSR'd HTML.
-  'gcb/field-showcase':            FieldShowcase,
 };
