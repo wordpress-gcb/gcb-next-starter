@@ -1,7 +1,9 @@
-import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
 import { H1, H2, H3, P, Code, Callout } from '@/components/DocsArticle';
 import ControlRef from '@/components/ControlRef';
-import { loadAllDocs } from '@/lib/docs';
+import { findDoc, loadAllDocs } from '@/lib/docs';
 
 export const metadata = { title: 'GCB Lite — Field reference' };
 
@@ -58,32 +60,23 @@ export default function FieldReference() {
     .map((c) => c.name)
     .filter((name) => byCategory.has(name));
 
+  // Intro prose lives in schemas/concepts/fields-overview.md so it's
+  // editable alongside the rest of the docs. Hidden from the sidebar
+  // via `section: __hidden__` — only rendered here, inline.
+  const intro = findDoc(['fields-overview']);
+
   return (
     <>
-      <H1>Field reference</H1>
+      <H1>{intro?.title || 'Field reference'}</H1>
 
-      <P>
-        Every entry in <Code>block.fields.json</Code> declares one Inspector
-        control. The <Code>type</Code> picks the React component shown in
-        the editor. The <Code>attributeKey</Code> picks the WP attribute
-        name your React component receives.
-      </P>
-
-      <P>
-        Every control accepts the common keys <Code>id</Code>,{' '}
-        <Code>attributeKey</Code>, <Code>label</Code>, <Code>helpText</Code>,{' '}
-        <Code>default</Code>, <Code>parentPanelId</Code>,{' '}
-        <Code>conditionalLogic</Code>, <Code>validation</Code>. The
-        cards below list only the control-specific options.
-      </P>
-
-      <Callout type="tip">
-        Hover any control name to preview its full reference page, or click
-        through. Every shipping site has the{' '}
-        <Link href="/all-fields">All fields</Link> page seeded with one of
-        every control type — same code the Inspector renders, with sample
-        data wired up.
-      </Callout>
+      {intro?.body && (
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={introComponents}
+        >
+          {intro.body}
+        </ReactMarkdown>
+      )}
 
       {orderedCategories.map((category) => (
         <section key={category}>
@@ -126,3 +119,14 @@ export default function FieldReference() {
 function slugify(s) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
+
+// Trim markdown component map for the page intro — only the elements
+// the fields-overview.md prose actually uses (paragraphs, inline code,
+// blockquote-as-Callout). Doesn't need the full set the dynamic page
+// uses (no headings or fenced code blocks in this short intro).
+const introComponents = {
+  p: ({ children }) => <P>{children}</P>,
+  code: ({ inline, children }) => (inline ? <Code>{children}</Code> : <code>{children}</code>),
+  blockquote: ({ children }) => <Callout type="tip">{children}</Callout>,
+  a: ({ href, children }) => <a href={href}>{children}</a>,
+};
