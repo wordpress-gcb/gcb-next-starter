@@ -11,7 +11,6 @@
  *
  * Attributes (all optional — empty falls back to sample):
  *   heading:       { text, level }                — heading-level field
- *   body:          string                          — textarea
  *   image:         { url, alt, focalPoint, ... }  — image field
  *   primary_cta:   { url, text, opensInNewTab }   — url field
  *   secondary_cta: { url, text, opensInNewTab }   — saved on the block
@@ -20,6 +19,12 @@
  *                                                   (kept for future
  *                                                   variants)
  *   facebook / twitter / linkedin: url-shaped objects
+ *
+ * Body is no longer a typed field — it's authored as InnerBlocks in
+ * WP (paragraphs, headings, lists, buttons, images, quotes, separator).
+ * The pre-rendered child HTML arrives here on `innerHtml` and is
+ * injected into the .banner-body slot. Demonstrates the dual paradigm:
+ * structured fields for metadata + free-form composition for content.
  */
 
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from 'react-icons/fa';
@@ -30,7 +35,7 @@ import { img } from './imageBase';
 // rather than blank.
 const SAMPLE = {
   heading:  'Building custom Gutenberg blocks should be this easy.',
-  body:     "One JSON file defines your fields. 30+ premium controls render natively in the Inspector — image focal points, galleries, repeaters, post relationships, conditional logic.\n\nGo headless: write one React component, get pixel-perfect 1:1 previews in wp-admin and on your public site. Or render in PHP if React's overkill. Your choice, per block.",
+  bodyHtml: "<p>One JSON file defines your fields. 30+ premium controls render natively in the Inspector — image focal points, galleries, repeaters, post relationships, conditional logic.</p><p>Go headless: write one React component, get pixel-perfect 1:1 previews in wp-admin and on your public site. Or render in PHP if React's overkill. Your choice, per block.</p>",
   ctaText:  'View on GitHub',
   ctaHref:  'https://github.com/wordpress-gcb/gutenberg-control-blocks-lite',
   image:    '/images/banner/banner-thumb-7.png',
@@ -43,12 +48,16 @@ const SAMPLE = {
 
 const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
-export default function SaasBanner({ attributes = {} }) {
+export default function SaasBanner({ attributes = {}, innerHtml = '' }) {
   const heading = attributes.heading || {};
   const HeadingTag = HEADING_LEVELS.has(heading.level) ? heading.level : 'h1';
   const headingText = heading.text || SAMPLE.heading;
 
-  const body = attributes.body || SAMPLE.body;
+  // Inner-blocks HTML arrives pre-rendered from WP (paragraphs, headings,
+  // buttons, etc.). When the block is brand-new and the author hasn't
+  // typed anything yet, fall back to the sample copy so the editor
+  // preview reads as a finished hero.
+  const bodyHtml = innerHtml && innerHtml.trim() ? innerHtml : SAMPLE.bodyHtml;
 
   // image field stores { url, alt, focalPoint, size, customWidth, ... }
   // Honour .url + .alt only here — focalPoint etc. only matter when the
@@ -75,9 +84,14 @@ export default function SaasBanner({ attributes = {} }) {
         <div className="banner-content">
           {eyebrow && <span className="subtitle">{eyebrow}</span>}
           <HeadingTag className="title">{headingText}</HeadingTag>
-          {body.split(/\n{2,}/).map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
+          <div
+            className="banner-body"
+            // Inner-blocks HTML is already escaped + sanitised by WP
+            // (wp_kses on save, wp.blocks render path). It's safe to
+            // inject — and we have to, since the children are arbitrary
+            // core blocks we don't know about on the React side.
+            dangerouslySetInnerHTML={{ __html: bodyHtml }}
+          />
           <div>
             <a
               href={primaryHref}

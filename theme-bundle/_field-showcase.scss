@@ -1,0 +1,355 @@
+/**
+ * Styles for the gcb/field-showcase block. Renders the all-fields
+ * demo page — one card per control type, grouped by panel.
+ *
+ * Visual model:
+ *   - Page is a single column of group sections (Text / Choice / etc.)
+ *   - Each group has a title + cards inside
+ *   - Each card shows: type chip + label + key + rendered value + raw JSON details
+ *   - Cards intentionally have a sober, docs-page look (not the
+ *     marketing-page hero look the rest of the demo uses)
+ */
+.gcb-field-showcase {
+	max-width: 880px;
+	margin: 0 auto;
+	padding: 4rem 1.5rem;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	color: #1e1e1e;
+	line-height: 1.55;
+
+	&__header {
+		margin-bottom: 3rem;
+	}
+
+	&__title {
+		font-size: 2rem;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0 0 0.5rem;
+	}
+
+	&__lede {
+		font-size: 1rem;
+		color: #525260;
+		margin: 0;
+		max-width: 60ch;
+	}
+
+	&__group {
+		margin-bottom: 2.5rem;
+	}
+
+	&__group-title {
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: #525260;
+		margin: 0 0 0.75rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid #ddd;
+	}
+
+	&__field {
+		display: grid;
+		grid-template-columns: minmax(200px, 1fr) 2fr;
+		gap: 1rem 1.5rem;
+		align-items: start;
+		padding: 1.25rem 0;
+		border-bottom: 1px solid #f0f0f1;
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	&__field-head {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		min-width: 0;
+	}
+
+	&__type {
+		display: inline-flex;
+		align-items: center;
+		align-self: flex-start;
+		height: 20px;
+		padding: 0 8px;
+		font-size: 0.6875rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: #5956E9;
+		background: #ECEBFB;
+		border-radius: 999px;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	}
+
+	&__label {
+		font-size: 0.95rem;
+		font-weight: 600;
+	}
+
+	&__key {
+		font-size: 0.75rem;
+		color: #757585;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		background: transparent;
+		padding: 0;
+	}
+
+	&__value {
+		min-width: 0;
+		font-size: 0.9375rem;
+	}
+
+	&__empty {
+		color: #999;
+		font-style: italic;
+		font-size: 0.875rem;
+	}
+
+	&__inline {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.85rem;
+		background: #f6f7f7;
+		padding: 2px 6px;
+		border-radius: 3px;
+	}
+
+	&__chips {
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: 4px;
+	}
+
+	&__chip {
+		display: inline-flex;
+		align-items: center;
+		height: 22px;
+		padding: 0 10px;
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #1e1e1e;
+		background: #f0f0f1;
+		border-radius: 999px;
+
+		&--active {
+			background: #5956E9;
+			color: #fff;
+		}
+	}
+
+	&__swatch {
+		// Bigger so it reads at a glance, with an explicit border-box
+		// so the border doesn't add to the visible square. Bootstrap's
+		// reboot can collapse empty inline elements — flexbox + a
+		// fixed width/height guarantees the box is always drawn.
+		display: inline-flex;
+		vertical-align: middle;
+		box-sizing: border-box;
+		width: 32px;
+		height: 32px;
+		border-radius: 4px;
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		margin-right: 10px;
+		flex-shrink: 0;
+	}
+
+	&__image {
+		// 16:9 box rendered via background-image so all the image
+		// control's options are visible (cover/contain/auto, focal
+		// point, custom width, fixed bg, repeat). Inline style on
+		// the element sets background-* and width.
+		aspect-ratio: 16 / 9;
+		max-width: 100%;
+		border-radius: 4px;
+		display: block;
+		background-color: #f0f0f1;
+	}
+
+	&__gallery {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+		gap: 4px;
+
+		img {
+			width: 100%;
+			height: 80px;
+			object-fit: cover;
+			border-radius: 4px;
+		}
+	}
+
+	&__file {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 6px 12px;
+		background: #f6f7f7;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		color: #1e1e1e;
+		text-decoration: none;
+		font-size: 0.875rem;
+
+		&:hover { background: #ececed; }
+	}
+
+	&__html {
+		p:first-child { margin-top: 0; }
+		p:last-child  { margin-bottom: 0; }
+	}
+
+	&__message {
+		padding: 10px 12px;
+		background: #f0f0f1;
+		border: 1px solid #dcdcde;
+		border-radius: 4px;
+		font-size: 0.875rem;
+		color: #525260;
+	}
+
+	&__heading {
+		margin: 0;
+		// Reset Bootstrap default heading colors so the chosen level
+		// looks like a heading, not whatever Bootstrap's body has set.
+		color: #1e1e1e;
+	}
+
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		margin-right: 10px;
+		vertical-align: middle;
+		color: #1e1e1e;
+
+		svg {
+			width: 24px;
+			height: 24px;
+			fill: currentColor;
+		}
+	}
+
+	&__list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+
+		li {
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			font-size: 0.875rem;
+		}
+
+		a {
+			color: #1e1e1e;
+			text-decoration: underline;
+			text-decoration-color: #c9c9d0;
+
+			&:hover { text-decoration-color: #1e1e1e; }
+		}
+	}
+
+	&__id {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.6875rem;
+		color: #757585;
+	}
+
+	&__map {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		display: block;
+		margin-bottom: 8px;
+	}
+
+	&__map-missing {
+		padding: 12px 14px;
+		background: #fff4e5;
+		border: 1px solid #f5d29a;
+		border-radius: 4px;
+		font-size: 0.8125rem;
+		color: #6b4400;
+		margin-bottom: 8px;
+	}
+
+	&__repeater {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__row {
+		margin: 0;
+		padding: 8px 12px;
+		background: #f6f7f7;
+		border-radius: 4px;
+		display: grid;
+		grid-template-columns: 80px 1fr;
+		gap: 4px 12px;
+
+		dt {
+			font-weight: 600;
+			font-size: 0.8125rem;
+			color: #525260;
+		}
+		dd {
+			margin: 0;
+			font-size: 0.875rem;
+			min-width: 0;
+			overflow-wrap: anywhere;
+		}
+	}
+
+	&__raw {
+		grid-column: 1 / -1;
+		margin-top: 0.5rem;
+
+		summary {
+			font-size: 0.75rem;
+			color: #757585;
+			cursor: pointer;
+			user-select: none;
+			padding: 4px 0;
+			&:hover { color: #1e1e1e; }
+		}
+
+		pre {
+			margin: 6px 0 0;
+			padding: 12px;
+			background: #1e1e1e;
+			color: #f6f7f7;
+			border-radius: 4px;
+			font-size: 0.75rem;
+			line-height: 1.5;
+			overflow: auto;
+			max-height: 280px;
+		}
+
+		code {
+			background: transparent;
+			color: inherit;
+			padding: 0;
+			font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		}
+	}
+
+	// On narrow screens, stack the head + value vertically.
+	@media (max-width: 720px) {
+		&__field {
+			grid-template-columns: 1fr;
+			gap: 0.5rem;
+		}
+	}
+}

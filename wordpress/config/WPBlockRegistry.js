@@ -38,6 +38,7 @@ import SaasCta               from '../../components/SaasCta';
 import SaasSectionText       from '../../components/SaasSectionText';
 import SaasIconAccordion     from '../../components/SaasIconAccordion';
 import SaasIconAccordionItem from '../../components/SaasIconAccordionItem';
+import FieldShowcase         from '../../components/FieldShowcase';
 
 export const WP_BLOCK_REGISTRY = {
   // Reference
@@ -62,4 +63,8 @@ export const WP_BLOCK_REGISTRY = {
   'gcb/saas-section-text':         SaasSectionText,
   'gcb/saas-icon-accordion':       SaasIconAccordion,
   'gcb/saas-icon-accordion-item':  SaasIconAccordionItem,
+
+  // Demo + QA: every gcb-lite control type, server-rendered. The React
+  // side just inherits the SSR'd HTML.
+  'gcb/field-showcase':            FieldShowcase,
 };

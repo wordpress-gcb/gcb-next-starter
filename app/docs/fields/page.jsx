@@ -147,7 +147,30 @@ export default function FieldReference() {
       </P>
 
       <H3 id="icon-control"><Code>icon</Code></H3>
-      <P>Dashicon / icon picker. Stores the icon slug.</P>
+      <P>
+        Visual picker over the WordPress 7.0+ icon registry. Stores{' '}
+        <Code>{`{ source: 'wp', name: 'core/star-filled' }`}</Code>; the
+        renderer resolves the name to SVG server-side via{' '}
+        <Code>WP_Icons_Registry</Code> so post_content stays clean.
+      </P>
+      <P>
+        Optional config restricts which icons appear in the picker — useful
+        once themes or plugins register their own sets via WP 7.1's{' '}
+        <Code>register_block_icon()</Code> API:
+      </P>
+      <Pre lang="json">{`{ "type": "icon", "attributeKey": "social",
+  "label": "Social icon",
+  "namespace": "icomoon" }
+
+{ "type": "icon", "attributeKey": "cta_icon",
+  "label": "CTA icon",
+  "filter": ["core/arrow-right", "core/external", "core/download"] }`}</Pre>
+      <P>
+        <Code>namespace</Code>: only icons whose name starts with{' '}
+        <Code>{`{namespace}/`}</Code>.{' '}
+        <Code>filter</Code>: explicit allow-list of full icon names
+        (takes precedence over <Code>namespace</Code>).
+      </P>
 
       <H2 id="layout">Layout</H2>
 

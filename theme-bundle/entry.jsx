@@ -41,17 +41,19 @@ import SiteFooter             from '@/components/SiteFooter';
  * only blocks like banner / cta), the adapter is a passthrough.
  */
 const ADAPTERS = {
-  'saas-banner': (raw) => ({
-    // SaasBanner takes { attributes }, so wrap. Banner's data-props
-    // is already keyed like `attributes.*` would be.
+  'saas-banner': (raw, el) => ({
+    // SaasBanner takes { attributes, innerHtml }. data-props carries the
+    // typed attribute values; the body is now InnerBlocks-authored
+    // content, so its HTML lives in the SSR'd .banner-body slot and we
+    // hoist it out before React replaces the subtree.
     attributes: {
       eyebrow:       raw.eyebrow || '',
       heading:       raw.heading,
-      body:          raw.body || '',
       primary_cta:   raw.primaryCta,
       secondary_cta: raw.secondaryCta,
       image:         raw.image,
     },
+    innerHtml: el?.querySelector('.banner-body')?.innerHTML || '',
   }),
 
   'saas-projects': (raw) => ({
@@ -208,7 +210,10 @@ function hydrateAll() {
       return;
     }
 
-    const props = adapt(raw);
+    // Adapters can optionally read the SSR'd children before we tear
+    // them out below — used by blocks that have InnerBlocks slots whose
+    // HTML lives in the rendered output, not in data-props.
+    const props = adapt(raw, el);
 
     let root = ROOTS.get(el);
     if (!root) {

@@ -54,6 +54,7 @@ export default function SiteHeader() {
               <nav className="mainmenu-nav">
                 <ul className="mainmenu">
                   <li><Link href="/">Home</Link></li>
+                  <li><Link href="/all-fields">Fields</Link></li>
                   <li><Link href="/docs">Docs</Link></li>
                   <li><Link href="/#projects">Projects</Link></li>
                   <li><Link href="/#blog">Blog</Link></li>
