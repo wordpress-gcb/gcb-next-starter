@@ -140,6 +140,30 @@ NEXT_PUBLIC_WP_URL=http://your-wp-site.test
 
 ---
 
+## Authenticating the render endpoint
+
+`/wordpress/render/{slug}` does real render work — left wide open, anyone on the public internet who finds the URL can hit it with arbitrary attrs and burn your compute. Gate it with a shared secret.
+
+1. On the frontend, set:
+   ```bash
+   # .env.local (also set on Vercel / your host's env)
+   RENDER_SECRET=<long random string>
+   ```
+2. On WordPress, set the same value via wp-admin → **Settings → GCB Lite → Render auth secret** (with a Generate button), or in `wp-config.php`:
+   ```php
+   define('GCBLITE_RENDER_SECRET', '<same long random string>');
+   ```
+
+`middleware.js` checks every `/wordpress/render/*` request for an `x-gcblite-render-secret` header and 401s anything that doesn't match (constant-time compare). The plugin sends the header automatically on every outbound call.
+
+Leaving `RENDER_SECRET` unset on the frontend keeps the routes open — fine for `npm run dev` smoke tests, **not safe for production**.
+
+What's not gated by this secret: `/wordpress/styles.css` and `/wordpress/editor.css`. The browser fetches those from the editor's `<link>` tag and doesn't have the WP→frontend secret. They're stylesheets — treat as public.
+
+`/api/revalidate` has its own separate secret (`REVALIDATE_SECRET`) — different credential, different shape; see "On-save revalidation" in the plugin Settings.
+
+---
+
 ## Using WordPress core blocks (cover, group, columns, patterns…)
 
 If your authors insert anything beyond paragraph / heading / list — say,
