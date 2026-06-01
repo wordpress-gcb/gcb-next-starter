@@ -32,7 +32,6 @@
  */
 
 import { NextResponse } from 'next/server';
-import { timingSafeEqual } from 'node:crypto';
 
 export const config = {
   // Only the render routes. Note styles.css / editor.css are
@@ -66,36 +65,31 @@ export function middleware(request) {
 /**
  * Constant-time string compare. `===` leaks the secret length and
  * common-prefix length via timing — fine for normal app code, real
- * leak for credential checks. timingSafeEqual requires equal-length
- * buffers, so we pad both sides to the same length BEFORE comparing.
+ * leak for credential checks.
  *
- * Padding strategy: hash both inputs to a fixed length. We don't need
- * cryptographic strength here (the secret itself is the credential);
- * we just need equal-length buffers. Easiest: pad each to the longer
- * of the two with a sentinel byte, then compare.
- *
- * In practice the secrets we generate from the Settings page are
- * 40-char hex strings, so the lengths match and the pad is a no-op.
- * The padding only matters if an attacker sends a header of a
- * different length to probe — and the pad neutralises that probe.
+ * Edge runtime doesn't expose node:crypto.timingSafeEqual, so we
+ * hand-roll the same idea: encode both strings to Uint8Arrays, pad
+ * the shorter one to match the longer, XOR every byte and OR the
+ * results. The loop runs Math.max(a.length, b.length) iterations
+ * regardless of when (or if) a mismatch occurs, so timing doesn't
+ * leak prefix-match length. The final `a.length === b.length`
+ * check prevents shorter-string-masquerading-as-longer through a
+ * pad-byte collision.
  */
 function constantTimeEquals(a, b) {
   if (typeof a !== 'string' || typeof b !== 'string') return false;
-  const len = Math.max(a.length, b.length);
-  const ba = Buffer.alloc(len);
-  const bb = Buffer.alloc(len);
-  ba.write(a);
-  bb.write(b);
-  // Even if a and b are different lengths, timingSafeEqual now has
-  // equal-length buffers and returns false. The pad bytes don't
-  // collide with hex chars so equal-prefix attacks don't help.
-  let equal = false;
-  try {
-    equal = timingSafeEqual(ba, bb);
-  } catch {
-    equal = false;
+  const enc = new TextEncoder();
+  const ba = enc.encode(a);
+  const bb = enc.encode(b);
+  const len = Math.max(ba.length, bb.length);
+  let diff = 0;
+  for (let i = 0; i < len; i++) {
+    // i >= length → byte is treated as 0; the XOR with the other
+    // side's actual byte still contributes to `diff` so the loop
+    // doesn't short-circuit. Same wall-clock for any input.
+    const x = i < ba.length ? ba[i] : 0;
+    const y = i < bb.length ? bb[i] : 0;
+    diff |= x ^ y;
   }
-  // Length must also match — pad bytes happened to match would
-  // otherwise let a shorter string masquerade as a longer one.
-  return equal && a.length === b.length;
+  return diff === 0 && ba.length === bb.length;
 }
