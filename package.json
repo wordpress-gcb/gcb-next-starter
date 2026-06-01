@@ -16,6 +16,7 @@
     "build:theme": "node theme-bundle/build.mjs",
     "start": "next start -p 3001",
     "sync:docs": "bash scripts/sync-docs.sh",
+    "smoke": "bash scripts/smoke.sh",
     "predev": "bash scripts/sync-docs.sh",
     "prebuild": "bash scripts/sync-docs.sh"
   },
