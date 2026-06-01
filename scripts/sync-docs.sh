@@ -26,12 +26,45 @@ done
 SOURCE="$PLUGIN_DIR/schemas"
 DEST="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/content"
 
+# Local layout missing? Try the CI fallback: clone the plugin from
+# GitHub into a temp dir and source from there. This is the path that
+# fires on Vercel / any CI runner that doesn't have the WordPress
+# install next door.
+#
+# The branch is configurable via GCBLITE_DOCS_REF (defaults to main)
+# so a deploy can pin to a tag, branch, or commit if the local plugin
+# checkout has drifted ahead of stable.
+#
+# Network failure here is FATAL — without docs the /docs route 404s
+# and the renderer ships missing content. Better to break the build
+# than ship a doc-less production deploy.
 if [ ! -d "$SOURCE" ]; then
-    echo "WARN: docs source not found at $SOURCE — skipping sync." >&2
-    echo "      Set --plugin=PATH or check the plugin layout." >&2
-    # Don't fail the build; the renderer treats a missing content dir
-    # as "no docs yet" rather than crashing.
-    exit 0
+    DOCS_REF="${GCBLITE_DOCS_REF:-main}"
+    DOCS_REPO="${GCBLITE_DOCS_REPO:-https://github.com/wordpress-gcb/gutenberg-control-blocks-lite.git}"
+    CACHE="${TMPDIR:-/tmp}/gcblite-docs-$$"
+    echo "→ docs source not found at $SOURCE — cloning $DOCS_REPO ($DOCS_REF) for CI sync." >&2
+
+    # --depth=1 + sparse-checkout = clone JUST schemas/ instead of the
+    # entire plugin history. Drops the cold clone to a couple hundred
+    # KB / under 5s on a typical Vercel build.
+    if ! git clone --quiet --depth=1 --filter=blob:none --sparse \
+            --branch "$DOCS_REF" "$DOCS_REPO" "$CACHE" 2>&1; then
+        echo "ERROR: failed to clone $DOCS_REPO for docs sync." >&2
+        echo "       Set GCBLITE_DOCS_REPO / GCBLITE_DOCS_REF or fix the local plugin path." >&2
+        rm -rf "$CACHE"
+        exit 1
+    fi
+    (cd "$CACHE" && git sparse-checkout set --no-cone schemas >/dev/null 2>&1) || true
+
+    if [ ! -d "$CACHE/schemas" ]; then
+        echo "ERROR: schemas/ not found in cloned $DOCS_REPO@$DOCS_REF." >&2
+        rm -rf "$CACHE"
+        exit 1
+    fi
+
+    SOURCE="$CACHE/schemas"
+    # Register cleanup so we don't leave the temp clone behind.
+    trap 'rm -rf "$CACHE"' EXIT
 fi
 
 mkdir -p "$DEST"
