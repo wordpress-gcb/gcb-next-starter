@@ -1,37 +1,50 @@
 /*-------------------------
     Forms Styles
 -------------------------*/
-input,
-.form-control {
-    border: var(--border-lighter);
-    border-radius: 16px;
-    background-color: transparent;
-    color: var(--color-text-dark);
-    padding: 15px 20px;
-    width: 100%;
-    &:focus {
-        outline: none;
-        box-shadow: 0 20px 48px -14px rgba(153,161,170,0.25);
-        border-color: transparent;
+//
+// Scoped under body:not(.wp-admin) so the theme's heavy form aesthetic
+// (60px height, 16px radius, 15px/20px padding) only applies on the
+// public frontend and inside the block-editor canvas iframe — NOT in
+// wp-admin chrome (media library modal, list tables, settings screens
+// etc.) where it would clobber WP's own input sizing.
+//
+// The original Saas source styled bare `input` globally; that leaked
+// into wp-admin via enqueue_block_assets and made #media-search-input
+// 60px tall. Keeping vendor source verbatim is no virtue when the
+// vendor source breaks the host system.
+body:not(.wp-admin) {
+    input,
+    .form-control {
+        border: var(--border-lighter);
+        border-radius: 16px;
+        background-color: transparent;
+        color: var(--color-text-dark);
+        padding: 15px 20px;
+        width: 100%;
+        &:focus {
+            outline: none;
+            box-shadow: 0 20px 48px -14px rgba(153,161,170,0.25);
+            border-color: transparent;
 
+        }
+        /* -- Placeholder -- */
+        &::placeholder {
+            color: var(--color-gray-2);
+            /* Firefox */
+            opacity: 1;
+        }
+        &:-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: var(--color-gray-2);
+        }
+        &::-ms-input-placeholder {
+            /* Microsoft Edge */
+            color: var(--color-gray-2);
+        }
     }
-    /* -- Placeholder -- */
-    &::placeholder {
-        color: var(--color-gray-2);
-        /* Firefox */
-        opacity: 1;
+    input {
+        height: 60px;
     }
-    &:-ms-input-placeholder {
-        /* Internet Explorer 10-11 */
-        color: var(--color-gray-2);
-    }
-    &::-ms-input-placeholder {
-        /* Microsoft Edge */
-        color: var(--color-gray-2);
-    }
-}
-input {
-    height: 60px;
 }
 
 .form-group {

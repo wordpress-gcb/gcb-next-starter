@@ -39,6 +39,26 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  // WordPress core block styles — required for any page that uses core
+  // blocks like core/cover, core/group, core/columns, core/buttons etc.
+  // (incl. anything inserted from the editor's pattern picker).
+  // Without these the markup ships but the cover gradients / group
+  // padding / image sizing all evaluate to nothing because the
+  // .wp-block-* selectors aren't styled.
+  //
+  // We pull straight from the WP origin so the version always matches
+  // what WP itself uses to serialise. ?ver= cache-busts when WP updates
+  // and avoids permanent Vercel caching of a possibly-stale file.
+  //
+  // ADOPTER NOTE: If you're forking this starter, swap NEXT_PUBLIC_WP_URL
+  // for your own WP install. If you DON'T use any core blocks beyond
+  // paragraph / heading / list (i.e. you stick to gcb/* blocks), you
+  // can delete this <link> and your bundle shrinks.
+  const wpUrl = process.env.NEXT_PUBLIC_WP_URL || '';
+  const coreBlockCssHref = wpUrl
+    ? `${wpUrl.replace(/\/+$/, '')}/wp-includes/css/dist/block-library/style.min.css`
+    : null;
+
   return (
     // data-bs-theme="light" anchors Bootstrap 5.3's CSS-variable theme
     // system. Without it, Bootstrap's --bs-body-color / --bs-body-bg
@@ -51,6 +71,12 @@ export default function RootLayout({ children }) {
       data-bs-theme="light"
       className={`${dmSans.variable} ${poppins.variable}`}
     >
+      <head>
+        {coreBlockCssHref && (
+          /* eslint-disable-next-line @next/next/no-css-tags */
+          <link rel="stylesheet" href={coreBlockCssHref} />
+        )}
+      </head>
       <body className="font-sans bg-white text-saas-body antialiased">
         {/*
           EmbedMode reads ?embed=1 and toggles a body class so the

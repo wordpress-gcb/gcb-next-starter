@@ -132,4 +132,11 @@ STYLESHEET INDEXING
 =========================================================================*/
 @import "project-overrides";
 
+// Saas Feature Scroll block. Shared between the Next.js frontend
+// (loaded via app.scss → here) AND the bundled WP theme.css (loaded
+// via theme-bundle/theme.scss which imports the same partial from
+// saas-scss/). Keep the rules here, not in theme-bundle/, so both
+// surfaces stay in sync.
+@import "feature-scroll";
+
 

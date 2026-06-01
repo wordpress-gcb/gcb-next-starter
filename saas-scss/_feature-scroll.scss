@@ -1,0 +1,236 @@
+/**
+ * Saas Feature Scroll block — sticky-image feature tour.
+ *
+ * Two-column CSS grid. The right column is a sticky stage that holds
+ * every item's image stacked on top of each other; the left column is a
+ * tall vertical rail of items. position:sticky lives in pure CSS so the
+ * behaviour works identically in React, in PHP, and in the editor
+ * canvas — no JS-toggled hydration class.
+ *
+ * Cross-fading between images:
+ *   - The stage has all images absolutely positioned; opacity: 0 by
+ *     default; opacity: 1 when .is-active is set.
+ *   - PHP marks the first image .is-active and stops there.
+ *   - React's component watches the items via IntersectionObserver and
+ *     swaps which image has .is-active as the user scrolls.
+ *
+ * Why this works where the previous version didn't:
+ *   - Previously the rail was display:flex AND the sticky element was
+ *     a child of it. Sticky elements stick to the nearest scrollable
+ *     ancestor; inside a flex-column with no defined heights, the
+ *     "scrollable" was the page, and sticky was trying to stick within
+ *     the flex container which was the same height as its content —
+ *     so there was no slack to stick against.
+ *   - Now the layout is a CSS grid with two real columns. The right
+ *     column's grid track is the same height as the left column (rail
+ *     of items). The sticky element sticks within that track. The
+ *     scroll container is the page itself.
+ */
+
+.gcb-saas-feature-scroll {
+    background-color: var(--color-light);
+    padding-top: 100px;
+    padding-bottom: 100px;
+
+    .section-heading {
+        max-width: 720px;
+
+        .subtitle {
+            color: var(--color-primary);
+            font-size: var(--font-body-1);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .title {
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: var(--font-body-1);
+            color: var(--color-body);
+            margin: 0;
+        }
+    }
+}
+
+.gcb-feature-scroll__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+
+    @media #{$md-layout} {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    // Editor preview: no sticky stage on the right (the parent skips
+    // emitting it). Rail goes full-width, each item becomes its own
+    // 2-col row with copy + clickable image.
+    &.is-editor-preview {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+// Left column: vertical stack of items. No height constraints — the
+// natural sum of item heights drives how far the right stage sticks.
+.gcb-feature-scroll__rail {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+// Right column: sticky stage. Stuck to the viewport (offset for the
+// admin / site header) as long as the rail next to it is still in
+// view. aspect-ratio + max-height keeps it from devouring the whole
+// screen on long pages.
+.gcb-feature-scroll__stage {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 24px;
+    overflow: hidden;
+    background-color: var(--color-white);
+    box-shadow: 0 30px 60px -30px rgba(89, 86, 233, 0.25);
+
+    @media #{$md-layout} {
+        position: relative;
+        top: auto;
+        order: -1; // image above the rail on mobile
+    }
+}
+
+.gcb-feature-scroll__stage-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+
+    &.is-active {
+        opacity: 1;
+    }
+}
+
+// Each item is one screen-tall block of copy. The full-viewport height
+// gives the sticky right column something to stick against — a short
+// item would scroll past instantly without giving the eye time to
+// follow the image swap.
+.gcb-feature-scroll__item {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px 0;
+
+    @media #{$md-layout} {
+        min-height: 0;
+        padding: 0;
+    }
+}
+
+// Editor-preview variant. The parent's sticky stage is gone, so the
+// item itself becomes a 2-col grid: copy on the left, clickable image
+// thumbnail on the right. min-height drops because we no longer need
+// scroll-room to demonstrate the sticky behaviour — authors just want
+// to see what's set.
+.gcb-feature-scroll__item.is-editor-preview {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 40px;
+    align-items: start;
+    min-height: 0;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    @media #{$md-layout} {
+        grid-template-columns: 1fr;
+    }
+
+    .gcb-feature-scroll__item-copy {
+        min-width: 0;
+    }
+}
+
+// Image cell rendered only in editor-preview. Aspect ratio matches the
+// public sticky stage so authors get a faithful preview of what will
+// appear in the right column on the live page.
+.gcb-feature-scroll__item-media {
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: var(--color-white);
+    box-shadow: 0 12px 30px -20px rgba(89, 86, 233, 0.25);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px -20px rgba(89, 86, 233, 0.35);
+    }
+
+    img, video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+}
+
+.gcb-feature-scroll__item-media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-gray-1);
+    font-size: var(--font-body-3);
+    font-style: italic;
+    padding: 20px;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(89, 86, 233, 0.04),
+        rgba(89, 86, 233, 0.04) 10px,
+        rgba(89, 86, 233, 0.08) 10px,
+        rgba(89, 86, 233, 0.08) 20px
+    );
+}
+
+.gcb-feature-scroll__item-title {
+    font-size: var(--h3);
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--color-text-dark);
+    margin: 0 0 24px;
+
+    @media #{$sm-layout} {
+        font-size: var(--h4);
+    }
+}
+
+.gcb-feature-scroll__item-body {
+    font-size: var(--font-body-1);
+    color: var(--color-body);
+    line-height: 1.6;
+
+    p {
+        margin: 0 0 16px;
+        &:last-child { margin-bottom: 0; }
+    }
+}
+

@@ -38,6 +38,7 @@ import SaasCta               from '../../components/SaasCta';
 import SaasSectionText       from '../../components/SaasSectionText';
 import SaasIconAccordion     from '../../components/SaasIconAccordion';
 import SaasIconAccordionItem from '../../components/SaasIconAccordionItem';
+import SaasFeatureScroll     from '../../components/SaasFeatureScroll';
 
 // Note: gcb/field-showcase is NOT in the registry. It's a server-rendered
 // demo+QA block — the plugin's render.php produces the full HTML, and
@@ -69,4 +70,5 @@ export const WP_BLOCK_REGISTRY = {
   'gcb/saas-section-text':         SaasSectionText,
   'gcb/saas-icon-accordion':       SaasIconAccordion,
   'gcb/saas-icon-accordion-item':  SaasIconAccordionItem,
+  'gcb/saas-feature-scroll':       SaasFeatureScroll,
 };

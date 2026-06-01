@@ -115,16 +115,81 @@ export default async function BlockRenderer({ blocks, blockDefaults = {} }) {
           );
         }
 
-        // Other core block.
-        const html = block.innerHTML || (block.innerContent || []).filter(Boolean).join('');
-        if (!html.trim()) return null;
+        // Other core block. If it has innerBlocks (core/cover, core/group,
+        // patterns from the inserter), reconstruct it: the parser puts
+        // shell HTML in `innerContent` with `null` placeholders where each
+        // child block goes. Rebuild by interleaving the shell strings
+        // with the recursively-rendered children. Without this every
+        // pattern with a wrapper renders as a blank inner-container —
+        // the cover/group outer divs ship without their content.
         return (
-          /* eslint-disable-next-line react/no-danger */
-          <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
+          <CoreBlockWithChildren
+            key={i}
+            block={block}
+            blockDefaults={blockDefaults}
+          />
         );
       })}
     </>
   );
+}
+
+/**
+ * Render a core block by reconstituting its full HTML.
+ *
+ * The WP parser hands us blocks in this shape:
+ *   - leaf blocks (paragraph, heading, image, separator) → innerHTML is
+ *     the rendered tag. innerContent is the same string.
+ *   - container blocks (cover, group, columns, column) → innerContent
+ *     is an array like ['<div class="wp-block-cover">...<div ...>', null,
+ *     '</div></div>'] with `null` markers where children belong. The
+ *     `innerHTML` field is the shell with markers REMOVED, which is
+ *     why injecting it directly produces empty wrappers.
+ *
+ * Reassemble by walking innerContent: keep string segments verbatim,
+ * substitute each `null` with the corresponding child block's
+ * recursively-rendered HTML. The whole thing then ships as a single
+ * dangerouslySetInnerHTML payload — which keeps tag pairing intact
+ * (unlike splitting segments across separate React nodes).
+ *
+ * NOTE: nested gcb/* blocks inside a core container ARE lost by this
+ * path (they get rendered as their saved HTML, not via the React
+ * registry). That's an accepted trade-off for the pattern use case —
+ * patterns are core-only by convention; nested gcb blocks should sit
+ * at the top level of the post, not inside a core wrapper.
+ */
+function CoreBlockWithChildren({ block }) {
+  const html = reconstructHtml(block);
+  if (!html.trim()) return null;
+  return (
+    /* eslint-disable-next-line react/no-danger */
+    <div dangerouslySetInnerHTML={{ __html: html }} style={{ display: 'contents' }} />
+  );
+}
+
+function reconstructHtml(block) {
+  if (!block) return '';
+  const children = block.innerBlocks || [];
+  const segments = block.innerContent || [];
+
+  // Leaf block: innerHTML is the whole render.
+  if (children.length === 0) {
+    return block.innerHTML || segments.filter(Boolean).join('');
+  }
+
+  // Container: walk segments, substitute null placeholders with
+  // children's reconstructed HTML.
+  let out = '';
+  let childIdx = 0;
+  for (const seg of segments) {
+    if (seg === null) {
+      const child = children[childIdx++];
+      if (child) out += reconstructHtml(child);
+    } else {
+      out += seg;
+    }
+  }
+  return out;
 }
 
 /**

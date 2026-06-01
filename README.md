@@ -140,6 +140,29 @@ NEXT_PUBLIC_WP_URL=http://your-wp-site.test
 
 ---
 
+## Using WordPress core blocks (cover, group, columns, patterns…)
+
+If your authors insert anything beyond paragraph / heading / list — say,
+a cover block, a group, columns, or a pre-built pattern from the
+inserter — you need WordPress's own block stylesheet on the Next side
+or the markup will ship without backgrounds, padding, or aspect ratios.
+
+`app/layout.jsx` pulls it from `NEXT_PUBLIC_WP_URL`:
+
+```jsx
+<link rel="stylesheet" href={`${wpUrl}/wp-includes/css/dist/block-library/style.min.css`} />
+```
+
+The link is auto-generated as long as `NEXT_PUBLIC_WP_URL` is set. You
+get the same core-block CSS WP itself uses to render, version-matched to
+whatever WP you're talking to.
+
+If you only ever use `gcb/*` blocks (no core layout blocks, no patterns),
+delete the `<link>` from `layout.jsx` — your page weight drops by a few
+hundred KB.
+
+---
+
 ## End-to-end smoke test (no WordPress required)
 
 ```bash

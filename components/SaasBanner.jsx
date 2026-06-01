@@ -1,127 +1,179 @@
 /**
- * SaasBanner — wired to WP. Reads from the block's `attributes`
- * (Inspector controls in WP admin) and falls back to Saas's sample
- * copy when a field is empty, so a freshly-inserted block already looks
- * fully designed in the editor preview. Authors then replace the bits
- * they care about.
+ * SaasBanner — sticky parity with render.php.
  *
- * Markup ported verbatim from Saas's BannerFour.js (.banner
- * .banner-style-4 and everything inside). The CSS at
- * saas-scss/template/_banner.scss styles it.
+ * This component is the RENDER TWIN of saas-banner's render.php. The
+ * structural contract — class names, focus-field attributes, conditional
+ * branches, video/image detection — has to match exactly because:
  *
- * Attributes (all optional — empty falls back to sample):
- *   heading:       { text, level }                — heading-level field
- *   image:         { url, alt, focalPoint, ... }  — image field
- *   primary_cta:   { url, text, opensInNewTab }   — url field
- *   secondary_cta: { url, text, opensInNewTab }   — saved on the block
- *                                                   but not rendered by
- *                                                   the BannerFour layout
- *                                                   (kept for future
- *                                                   variants)
+ *   1. When gcblite_force_component_server is on, the editor preview
+ *      fetches THIS component's output and authors rely on the same
+ *      click-to-focus, the same image constraint, the same body slot.
+ *   2. theme.css + the inline override in the theme's functions.php
+ *      target the PHP markup; React has to ship the same selectors.
+ *
+ * If you change render.php, change this file. If you change this file,
+ * change render.php. See [[component-twin-parity]] in the harness rules.
+ *
+ * Attributes (all optional):
+ *   eyebrow:       string
+ *   image:         { url, alt, focalPoint, ... }  — accepts video too
+ *   primary_cta:   { url, text, opensInNewTab }
+ *   secondary_cta: { url, text, opensInNewTab }   — saved but unrendered
  *   facebook / twitter / linkedin: url-shaped objects
  *
- * Body is no longer a typed field — it's authored as InnerBlocks in
- * WP (paragraphs, headings, lists, buttons, images, quotes, separator).
- * The pre-rendered child HTML arrives here on `innerHtml` and is
- * injected into the .banner-body slot. Demonstrates the dual paradigm:
- * structured fields for metadata + free-form composition for content.
+ * Heading + body are NOT typed fields — they live inside InnerBlocks,
+ * authored as core/heading + core/paragraph etc. The pre-rendered child
+ * HTML arrives on `innerBlocks` (BlockRenderer hands it through) and is
+ * injected into .banner-body. No SAMPLE fallback for the body: render.php
+ * seeds the InnerBlocks template, so a fresh block already has starter
+ * content. If the author deletes everything inside, the body renders empty.
  */
 
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from 'react-icons/fa';
 import { img } from './imageBase';
 
-// Saas's hero sample copy — used when the matching attribute is
-// empty. Means an unedited block in the editor previews fully styled
-// rather than blank.
-const SAMPLE = {
-  heading:  'Building custom Gutenberg blocks should be this easy.',
-  bodyHtml: "<p>One JSON file defines your fields. 30+ premium controls render natively in the Inspector — image focal points, galleries, repeaters, post relationships, conditional logic.</p><p>Go headless: write one React component, get pixel-perfect 1:1 previews in wp-admin and on your public site. Or render in PHP if React's overkill. Your choice, per block.</p>",
-  ctaText:  'View on GitHub',
-  ctaHref:  'https://github.com/wordpress-gcb/gutenberg-control-blocks-lite',
-  image:    '/images/banner/banner-thumb-7.png',
-  socials: {
-    facebook: 'https://facebook.com/',
-    twitter:  'https://twitter.com/',
-    linkedin: 'https://www.linkedin.com/',
-  },
-};
+const VIDEO_EXTS = new Set(['mp4', 'webm', 'mov', 'm4v', 'ogv']);
 
-const HEADING_LEVELS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
+function detectVideo(url) {
+  if (!url) return false;
+  const ext = (url.split('?')[0].split('#')[0].split('.').pop() || '').toLowerCase();
+  return VIDEO_EXTS.has(ext);
+}
 
-export default function SaasBanner({ attributes = {}, innerHtml = '' }) {
-  const heading = attributes.heading || {};
-  const HeadingTag = HEADING_LEVELS.has(heading.level) ? heading.level : 'h1';
-  const headingText = heading.text || SAMPLE.heading;
+export default function SaasBanner({ attributes = {}, innerBlocks = null }) {
+  const eyebrow      = attributes.eyebrow || '';
+  const primaryCta   = attributes.primary_cta || null;
+  const image        = (attributes.image && attributes.image.url) ? attributes.image : null;
+  const facebookUrl  = attributes.facebook?.url || '';
+  const twitterUrl   = attributes.twitter?.url  || '';
+  const linkedinUrl  = attributes.linkedin?.url || '';
 
-  // Inner-blocks HTML arrives pre-rendered from WP (paragraphs, headings,
-  // buttons, etc.). When the block is brand-new and the author hasn't
-  // typed anything yet, fall back to the sample copy so the editor
-  // preview reads as a finished hero.
-  const bodyHtml = innerHtml && innerHtml.trim() ? innerHtml : SAMPLE.bodyHtml;
+  // Three states for the body, two callers:
+  //
+  //   Editor preview (component-server route): innerBlocks arrives null.
+  //     We emit an <innerblocks> marker. parse-preview.js swaps it for a
+  //     live wp-block-editor InnerBlocks slot — same trick the Repeater
+  //     component uses. WP owns the children; the React render owns the
+  //     surrounding layout.
+  //
+  //   Public frontend (BlockRenderer at /): innerBlocks is the parsed
+  //     array of child blocks. We join their innerHTML into the body
+  //     slot directly.
+  //
+  //   Fresh block, author hasn't typed anything: empty array, empty
+  //     body. render.php's InnerBlocks template seeds starter content
+  //     upstream; if the author cleared it deliberately, respect that.
+  const isEditorPreview = innerBlocks === null;
+  const bodyHtml = (innerBlocks || [])
+    .map((b) => b?.innerHTML || '')
+    .join('')
+    .trim();
 
-  // image field stores { url, alt, focalPoint, size, customWidth, ... }
-  // Honour .url + .alt only here — focalPoint etc. only matter when the
-  // hero crops; Saas's hero is full-image so they don't apply.
-  const image = attributes.image && attributes.image.url
-    ? attributes.image
-    : { url: SAMPLE.image, alt: '' };
+  const primaryHref   = primaryCta?.url  || '';
+  const primaryLabel  = primaryCta?.text || 'View on GitHub';
+  const primaryTarget = primaryCta?.opensInNewTab ? '_blank' : undefined;
+  const primaryRel    = primaryCta?.opensInNewTab ? 'noopener noreferrer' : undefined;
 
-  const primaryCta = attributes.primary_cta || {};
-  const primaryHref   = primaryCta.url  || SAMPLE.ctaHref;
-  const primaryLabel  = primaryCta.text || SAMPLE.ctaText;
-  const primaryTarget = primaryCta.opensInNewTab ? '_blank' : undefined;
-  const primaryRel    = primaryCta.opensInNewTab ? 'noopener noreferrer' : undefined;
+  const mediaUrl = image?.url || '';
+  const mediaAlt = image?.alt || '';
+  const isVideo  = detectVideo(mediaUrl);
 
-  const facebook = (attributes.facebook && attributes.facebook.url) || SAMPLE.socials.facebook;
-  const twitter  = (attributes.twitter  && attributes.twitter.url)  || SAMPLE.socials.twitter;
-  const linkedin = (attributes.linkedin && attributes.linkedin.url) || SAMPLE.socials.linkedin;
-
-  const eyebrow = attributes.eyebrow || '';
+  // Socials: only render if at least one URL is set (matches PHP).
+  const socials = [
+    facebookUrl  && { key: 'Facebook',  url: facebookUrl,  icon: <FaFacebookF /> },
+    twitterUrl   && { key: 'Twitter',   url: twitterUrl,   icon: <FaTwitter /> },
+    linkedinUrl  && { key: 'Linkedin',  url: linkedinUrl,  icon: <FaLinkedinIn /> },
+  ].filter(Boolean);
 
   return (
-    <div className="banner banner-style-4">
+    <div
+      className="banner banner-style-4 gcb-saas-banner"
+      data-block-name="saas-banner"
+    >
       <div className="container">
         <div className="banner-content">
-          {eyebrow && <span className="subtitle">{eyebrow}</span>}
-          <HeadingTag className="title">{headingText}</HeadingTag>
-          <div
-            className="banner-body"
-            // Inner-blocks HTML is already escaped + sanitised by WP
-            // (wp_kses on save, wp.blocks render path). It's safe to
-            // inject — and we have to, since the children are arbitrary
-            // core blocks we don't know about on the React side.
-            dangerouslySetInnerHTML={{ __html: bodyHtml }}
-          />
-          <div>
-            <a
-              href={primaryHref}
-              target={primaryTarget}
-              rel={primaryRel}
-              className="axil-btn btn-fill-primary btn-large"
-            >
-              {primaryLabel}
-            </a>
+          {eyebrow && (
+            <span className="subtitle" data-focus-field="eyebrow">{eyebrow}</span>
+          )}
+
+          {/* InnerBlocks body. Includes the H1 the author edited inline. */}
+          <div className="banner-body gcb-banner-innerblocks">
+            {isEditorPreview ? (
+              // Editor: emit the <innerblocks> marker. The plugin's
+              // parse-preview.js swaps this for a live wp-block-editor
+              // InnerBlocks slot with the author's actual children.
+              // Template + allowed-blocks list match what render.php seeds
+              // so the two render paths give the same starter content.
+              <innerblocks
+                allowedblocks='["core/paragraph","core/heading","core/list","core/buttons","core/image","core/quote","core/separator"]'
+                template='[["core/heading",{"level":1,"className":"title","content":"Your headline here"}],["core/paragraph",{"content":"Replace this paragraph with your own copy."}]]'
+              />
+            ) : (
+              // Public frontend: BlockRenderer already passed the parsed
+              // children. Join their innerHTML into the slot.
+              <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+            )}
           </div>
+
+          {primaryHref && (
+            <div data-focus-field="primary_cta">
+              <a
+                href={primaryHref}
+                target={primaryTarget}
+                rel={primaryRel}
+                className="axil-btn btn-fill-primary btn-large"
+              >
+                {primaryLabel}
+              </a>
+            </div>
+          )}
         </div>
-        <div className="banner-thumbnail">
-          <div className="large-thumb">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img(image.url)} alt={image.alt || ''} />
+
+        {mediaUrl && (
+          <div className="banner-thumbnail" data-focus-field="image">
+            <div className="large-thumb">
+              {isVideo ? (
+                <video
+                  src={img(mediaUrl)}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label={mediaAlt}
+                />
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={img(mediaUrl)} alt={mediaAlt} />
+              )}
+            </div>
           </div>
-        </div>
-        <div className="banner-social">
-          <div className="border-line" />
-          <ul className="list-unstyled social-icon">
-            <li><a href={facebook}><FaFacebookF /> Facebook</a></li>
-            <li><a href={twitter}><FaTwitter /> twitter</a></li>
-            <li><a href={linkedin}><FaLinkedinIn /> Linkedin</a></li>
-          </ul>
-        </div>
+        )}
+
+        {socials.length > 0 && (
+          <div className="banner-social">
+            <div className="border-line" />
+            <ul className="list-unstyled social-icon">
+              {socials.map((s) => (
+                <li key={s.key}>
+                  <a href={s.url}>
+                    {s.icon} {s.key}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
+
       <ul className="list-unstyled shape-group-19">
         {/* eslint-disable @next/next/no-img-element */}
-        <li className="shape shape-1"><img src={img('/images/others/bubble-29.png')} alt="" /></li>
-        <li className="shape shape-2"><img src={img('/images/others/line-7.png')} alt="" /></li>
+        <li className="shape shape-1">
+          <img src={img('/images/others/bubble-29.png')} alt="" />
+        </li>
+        <li className="shape shape-2">
+          <img src={img('/images/others/line-7.png')} alt="" />
+        </li>
         {/* eslint-enable @next/next/no-img-element */}
       </ul>
     </div>
