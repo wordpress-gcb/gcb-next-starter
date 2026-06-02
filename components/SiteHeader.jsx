@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaGithub } from 'react-icons/fa';
 
-export default function SiteHeader() {
+export default function SiteHeader({ latestRelease = null }) {
   const sticky = useSticky(100);
 
   return (
@@ -66,17 +66,40 @@ export default function SiteHeader() {
               <ul className="list-unstyled">
                 <li>
                   <a
-                    href="https://github.com/wordpress-gcb/gutenberg-control-blocks-lite"
+                    href="https://github.com/wordpress-gcb/gutenberg-control-blocks-lite/releases"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="GCB Lite on GitHub"
+                    aria-label={
+                      latestRelease
+                        ? `GCB Lite ${latestRelease} on GitHub`
+                        : 'GCB Lite on GitHub'
+                    }
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
+                      gap: 8,
                       color: 'inherit',
+                      textDecoration: 'none',
                     }}
                   >
                     <FaGithub size={32} />
+                    {latestRelease && (
+                      <span
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 600,
+                          lineHeight: 1,
+                          padding: '4px 8px',
+                          borderRadius: 999,
+                          border: '1px solid var(--color-gray-1, #d0d5dd)',
+                          color: 'var(--color-gray-1, #6b7280)',
+                          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {latestRelease}
+                      </span>
+                    )}
                   </a>
                 </li>
               </ul>
