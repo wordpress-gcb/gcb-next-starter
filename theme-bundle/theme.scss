@@ -1,0 +1,17 @@
+// Theme bundle SCSS entry — single self-contained stylesheet shipped
+// inside the gcb-saas-theme theme. Imports Bootstrap 5.3 + the bundled
+// Saas SCSS tree, then the project-specific overrides last so they
+// always win the cascade.
+//
+// Compiled by theme-bundle/build.mjs via the sass CLI:
+//   sass --no-source-map theme-bundle/theme.scss -> theme.css
+// Output goes to gcblite/examples/themes/gcb-saas-theme/build/theme.css.
+
+// Import Bootstrap's SCSS source so sass actually inlines it. The
+// compiled bootstrap.min.css form leaves a literal `@import url(...)`
+// in the output that 404s at runtime — the source form gets concatenated
+// into the same stylesheet.
+@import "bootstrap/scss/bootstrap";
+@import "../saas-scss/app";
+@import "../saas-scss/feature-scroll";
+@import "field-showcase";

@@ -1,0 +1,24 @@
+{
+  "controls": [
+    { "id": "panel_main", "type": "group", "label": "CTA", "controlsGroup": "settings" },
+
+    { "id": "ctrl_heading", "type": "text",     "label": "Heading", "attributeKey": "heading",
+      "default": "", "controlsGroup": "settings", "parentPanelId": "panel_main" },
+
+    { "id": "ctrl_body",    "type": "textarea", "label": "Body",    "attributeKey": "body",
+      "default": "", "controlsGroup": "settings", "parentPanelId": "panel_main" },
+
+    { "id": "ctrl_link",    "type": "url",      "label": "Button",  "attributeKey": "link",
+      "controlsGroup": "settings", "parentPanelId": "panel_main" },
+
+    { "id": "ctrl_variant", "type": "toggle-group", "label": "Style", "attributeKey": "variant",
+      "attributeType": "string", "default": "dark",
+      "controlsGroup": "settings", "parentPanelId": "panel_main",
+      "options": [
+        { "label": "Dark",    "value": "dark"    },
+        { "label": "Light",   "value": "light"   },
+        { "label": "Branded", "value": "branded" }
+      ]
+    }
+  ]
+}

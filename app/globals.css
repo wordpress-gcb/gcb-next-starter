@@ -1,14 +1,52 @@
-@tailwind base;
+/*
+ * Tailwind: components + utilities only, NO `@tailwind base`.
+ *
+ * Why no base? Tailwind's preflight resets headings to font-size: inherit
+ * (so authors can style heading sizes purely with utility classes), and
+ * also removes margins / list bullets / etc. That preflight wins the
+ * cascade over Abstrak's typography (which sets `h3 { font-size: var(--h3) }`
+ * etc. unscoped). Result: every heading looked like body text.
+ *
+ * The non-Abstrak components on this site (Hero, Cta, FeatureTrio from
+ * the starter's earlier branch) used preflight + utility classes for
+ * headings, so they get plain h-tag styling. That's acceptable for those
+ * because they're demo blocks; the polished Abstrak components are the
+ * money path and they need their CSS to land cleanly.
+ *
+ * If you ever bring those starter components into a production site,
+ * style their headings explicitly via Tailwind utilities or a custom
+ * components layer here.
+ */
 @tailwind components;
 @tailwind utilities;
 
 /*
- * <repeater> markers exist solely so gcb-lite's editor JS can spot them and
- * swap in an InnerBlocks UI with an Add button. The editor parser removes
- * the tag from the DOM during that swap, so the rule below only takes
- * effect on the public frontend where the marker would otherwise leak
- * through as an empty inline element.
+ * <repeater> markers exist solely so gcb-lite's editor JS can spot them
+ * and swap in an InnerBlocks UI with an Add button. The editor parser
+ * removes the tag from the DOM during that swap, so the rule below only
+ * takes effect on the public frontend where the marker would otherwise
+ * leak through as an empty inline element.
  */
 repeater {
   display: none;
+}
+
+/*
+ * Embed mode — set on <body> by EmbedMode.jsx when ?embed=1. Used by
+ * the docs hover-preview iframe to show just the docs article content,
+ * no site chrome and no docs sidebar. The article column also widens
+ * to use the full container.
+ */
+body.is-embed-mode .header,
+body.is-embed-mode footer,
+body.is-embed-mode aside {
+  display: none !important;
+}
+body.is-embed-mode .container {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+body.is-embed-mode .container > .row > [class^="col-"] {
+  flex: 0 0 100%;
+  max-width: 100%;
 }

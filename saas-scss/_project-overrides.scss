@@ -1,0 +1,73 @@
+/*
+ * Project-specific overrides of Bootstrap / Saas rules.
+ *
+ * Why this file exists: editing the Saas source SCSS in place loses
+ * the ability to bring in upstream updates if Axil ships any. Same for
+ * Bootstrap. Anything project-specific lives here and is imported LAST
+ * from app.scss so it wins the cascade.
+ *
+ * Each rule should cite the source rule it overrides and why.
+ */
+
+/* ----------------------------------------------------------------------
+ * Accordion-collapse — let our React Collapse component drive everything.
+ *
+ * Bootstrap ships `display: none` on `.collapse:not(.show)` (via its
+ * accordion / collapse stylesheet). That defeats the inline
+ * `display: grid` our React Collapse uses for the open/close
+ * animation — `display: none` can't be transitioned, and once it's
+ * applied the element is removed from layout so the grid trick stops
+ * working.
+ *
+ * The React component already controls visibility via inline
+ * `grid-template-rows: 0fr | 1fr` — when closed, the row collapses to
+ * zero height naturally. So we can override Bootstrap's hide rule and
+ * trust the component.
+ * ---------------------------------------------------------------------- */
+.accordion-collapse.collapse {
+    display: grid !important;
+    height: auto !important;
+    visibility: visible !important;
+}
+
+/* ----------------------------------------------------------------------
+ * .section-heading.heading-left p
+ *
+ * Saas default:
+ *   .section-heading p { width: 50%; margin: 0 auto 40px; }
+ * intended for centred hero-style headings where a narrow centred
+ * paragraph reads as intentional. The `.heading-left` modifier only
+ * overrides text-align + paragraph margin — width: 50% carries through.
+ *
+ * Wherever we use `.section-heading.heading-left`, paragraphs should
+ * use the full column width.
+ * ---------------------------------------------------------------------- */
+.section-heading.heading-left p {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* ----------------------------------------------------------------------
+ * Editor-only: bypass the theme.json content-width clamp for saas
+ * blocks.
+ *
+ * theme.json sets layout.contentSize: 768px. WP applies that as
+ *   .block-editor-block-list__layout.is-root-container
+ *     > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+ *       max-width: 768px;
+ *       margin-left: auto !important;
+ *       margin-right: auto !important;
+ *     }
+ * which clamps every root-level block in the editor to 768px. The
+ * intent is to make page-body content readable, but saas-* blocks
+ * are full-bleed sections — they need the whole viewport.
+ *
+ * Override for our blocks only. Frontend is unaffected (this selector
+ * targets the editor-only `.block-editor-block-list__block` wrapper).
+ * ---------------------------------------------------------------------- */
+.block-editor-block-list__block[data-type^="gcb/saas-"] {
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}

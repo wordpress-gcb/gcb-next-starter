@@ -66,9 +66,12 @@ export default async function CatchAllPage({ params }) {
   // defaults explicitly. Fetched once, shared across BlockRenderer.
   const blockDefaults = await getBlockDefaults();
 
+  // No <main> chrome here on purpose: the section blocks own their own
+  // .section-padding / .container layout so the page reads exactly like
+  // Saas's own marketing pages. A max-w wrapper would collapse the
+  // full-bleed dark CTA + bubble field down to a column.
   return (
-    <main className="max-w-5xl mx-auto p-8">
-      <h1 className="text-4xl font-semibold mb-6">{entity.title?.rendered || ''}</h1>
+    <main>
       <BlockRenderer blocks={blocks} blockDefaults={blockDefaults} />
     </main>
   );

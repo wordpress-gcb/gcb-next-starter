@@ -1,0 +1,36 @@
+{
+  "controls": [
+    { "id": "panel_content", "type": "group", "label": "Content", "controlsGroup": "settings" },
+
+    { "id": "ctrl_eyebrow",  "type": "text",     "label": "Eyebrow",   "attributeKey": "eyebrow",  "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_content" },
+
+    { "id": "ctrl_heading",  "type": "text",     "label": "Heading",   "attributeKey": "heading",  "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_content" },
+
+    { "id": "ctrl_body",     "type": "wysiwyg",  "label": "Body",      "attributeKey": "body",     "default": "",
+      "controlsGroup": "settings", "parentPanelId": "panel_content" },
+
+    { "id": "ctrl_image",    "type": "image",    "label": "Image",     "attributeKey": "image",
+      "controlsGroup": "settings", "parentPanelId": "panel_content" },
+
+    { "id": "panel_cta",     "type": "group", "label": "Call to action", "controlsGroup": "settings" },
+
+    { "id": "ctrl_cta_primary",   "type": "url", "label": "Primary CTA",   "attributeKey": "ctaPrimary",
+      "controlsGroup": "settings", "parentPanelId": "panel_cta" },
+
+    { "id": "ctrl_cta_secondary", "type": "url", "label": "Secondary CTA", "attributeKey": "ctaSecondary",
+      "controlsGroup": "settings", "parentPanelId": "panel_cta" },
+
+    { "id": "panel_layout",  "type": "group", "label": "Layout", "controlsGroup": "settings" },
+
+    { "id": "ctrl_image_side", "type": "toggle-group", "label": "Image position", "attributeKey": "imageSide",
+      "attributeType": "string", "default": "right",
+      "controlsGroup": "settings", "parentPanelId": "panel_layout",
+      "options": [
+        { "label": "Left",  "value": "left"  },
+        { "label": "Right", "value": "right" }
+      ]
+    }
+  ]
+}

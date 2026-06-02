@@ -1,0 +1,83 @@
+name: CI
+
+# Run on every push and PR. Cheap insurance — catches build errors,
+# middleware/edge runtime imports, missing modules, broken doc sync.
+# If this passes, the route handlers at least exist and the bundle
+# compiles. It does NOT replace browser testing for visual regressions.
+
+on:
+  push:
+    branches: [examples, main]
+  pull_request:
+    branches: [examples, main]
+
+jobs:
+  build-and-smoke:
+    runs-on: ubuntu-latest
+
+    # Step times below are approximate (Ubuntu free-tier runner):
+    #   - checkout + setup-node + cache: ~30s
+    #   - npm ci: ~60s (cached) / ~120s (cold)
+    #   - prebuild + next build: ~90-120s
+    #   - smoke: ~15s
+    # Whole job: ~3 min steady-state. Budget worth paying to stop
+    # shipping broken `/docs` and 500ing middleware.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Pin to whatever Vercel uses for production builds. If
+          # Vercel bumps, bump here too — same Node = same bugs.
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        # `npm run build` invokes the prebuild hook which runs
+        # sync-docs.sh. The CI fallback in that script clones the
+        # plugin from GitHub so content/ is populated.
+        run: npm run build
+        env:
+          # Smoke-only WP URL. Doesn't have to resolve — the homepage
+          # gracefully handles fetch failures with the setup hint,
+          # so build + smoke still pass when WP is unreachable from
+          # CI. Real production WP URL lives in Vercel env.
+          NEXT_PUBLIC_WP_URL: http://wp.invalid
+
+      - name: Start server in background
+        # `next start` serves the production build. We background it
+        # and poll for readiness — saves the "server takes 5 seconds
+        # to bind, smoke runs too early" race.
+        run: |
+          npm run start &
+          SERVER_PID=$!
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+          echo "Started next start as PID $SERVER_PID"
+
+          # Poll up to 30s for the port to bind.
+          for i in {1..30}; do
+            if curl -s -o /dev/null http://localhost:3001/; then
+              echo "Server is ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server failed to bind within 30s"
+          exit 1
+
+      - name: Smoke test routes
+        run: BASE_URL=http://localhost:3001 bash scripts/smoke.sh
+
+      - name: Stop server
+        # Always run, even on smoke failure, so the runner cleans up.
+        if: always()
+        run: |
+          if [ -n "${SERVER_PID:-}" ]; then
+            kill $SERVER_PID 2>/dev/null || true
+          fi
