@@ -15,6 +15,7 @@ import { Suspense } from 'react';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import EmbedMode from '@/components/EmbedMode';
+import { getLatestReleaseTag } from '@/lib/latestRelease';
 
 // Saas design tokens — same fonts the gcb-saas theme.json declares,
 // loaded via next/font so we get the self-hosting + font-display:swap
@@ -38,7 +39,11 @@ export const metadata = {
   description: 'File-based schemas. No UI authoring. A scaffold CLI built for stdin. Render in PHP, React, or both — same typed fields, same source of truth.',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // Latest published release tag, for the header badge. Cached + fail-soft
+  // (null when the API is unreachable / rate-limited / no releases yet).
+  const latestRelease = await getLatestReleaseTag();
+
   // WordPress core block styles — required for any page that uses core
   // blocks like core/cover, core/group, core/columns, core/buttons etc.
   // (incl. anything inserted from the editor's pattern picker).
@@ -86,7 +91,7 @@ export default function RootLayout({ children }) {
         <Suspense fallback={null}>
           <EmbedMode />
         </Suspense>
-        <SiteHeader />
+        <SiteHeader latestRelease={latestRelease} />
         <main>{children}</main>
         <SiteFooter />
       </body>

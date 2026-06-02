@@ -158,11 +158,16 @@ const mdComponents = {
   h2: ({ children, id }) => <H2 id={id}>{children}</H2>,
   h3: ({ children, id }) => <H3 id={id}>{children}</H3>,
   p: ({ children }) => <P>{children}</P>,
-  code: ({ inline, children, className }) => {
-    if (inline) return <Code>{children}</Code>;
-    // Code fence — react-markdown wraps it in <pre><code>; we render
-    // via our Pre component for syntax highlighting + lang label.
-    const lang = (className || '').replace('language-', '');
+  // react-markdown v9+ removed the `inline` prop, so we can't branch on it.
+  // Distinguish inline code from a fenced block by the className: only fenced
+  // blocks carry `language-*` (added by remark from the fence info string).
+  // Anything without it is an inline `code` span and renders as a chip — this
+  // is what was breaking: every inline span was falling through to <Pre> and
+  // rendering as a full-width padded block on its own line.
+  code: ({ children, className }) => {
+    const isFenced = /\blanguage-/.test(className || '');
+    if (!isFenced) return <Code>{children}</Code>;
+    const lang = (className || '').replace(/.*language-/, '').trim();
     return <Pre lang={lang}>{String(children).replace(/\n$/, '')}</Pre>;
   },
   pre: ({ children }) => <>{children}</>, // skip the default <pre>, the code child renders Pre itself

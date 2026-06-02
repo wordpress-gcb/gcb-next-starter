@@ -126,7 +126,10 @@ function slugify(s) {
 // uses (no headings or fenced code blocks in this short intro).
 const introComponents = {
   p: ({ children }) => <P>{children}</P>,
-  code: ({ inline, children }) => (inline ? <Code>{children}</Code> : <code>{children}</code>),
+  // The intro prose is all inline code (no fenced blocks), and
+  // react-markdown v9+ dropped the `inline` flag — so render every
+  // `code` node as our inline chip.
+  code: ({ children }) => <Code>{children}</Code>,
   blockquote: ({ children }) => <Callout type="tip">{children}</Callout>,
   a: ({ href, children }) => <a href={href}>{children}</a>,
 };
