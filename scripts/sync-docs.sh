@@ -67,17 +67,24 @@ if [ ! -d "$SOURCE" ]; then
     trap 'rm -rf "$CACHE"' EXIT
 fi
 
+# Copy only *.md / *.json, preserving the directory layout under DEST.
+# We avoid rsync here: Vercel's build image doesn't ship it (build dies
+# with `rsync: command not found`, exit 127). git + find + cp are all
+# present on every runner, so the sync stays portable.
+#
+# --delete semantics: wipe DEST first so a doc removed upstream doesn't
+# linger as a stale routable page. DEST is gitignored and rebuilt every
+# run, so blowing it away is safe.
+rm -rf "$DEST"
 mkdir -p "$DEST"
-rsync -a --delete \
-    --exclude='README.md' \
-    --include='*/' \
-    --include='*.md' \
-    --include='*.json' \
-    --exclude='*' \
-    "$SOURCE/" "$DEST/"
 
-# Belt + braces: even if a README slips through, strip it. The
-# README files are contributor-facing; they're not routable docs.
-find "$DEST" -name 'README.md' -delete 2>/dev/null || true
+# Walk the source for the file types we publish and copy each into the
+# mirrored path under DEST, skipping contributor-facing READMEs.
+find "$SOURCE" \( -name '*.md' -o -name '*.json' \) ! -name 'README.md' -type f | while read -r src; do
+    rel="${src#"$SOURCE"/}"          # path relative to SOURCE
+    dst="$DEST/$rel"
+    mkdir -p "$(dirname "$dst")"
+    cp "$src" "$dst"
+done
 
 echo "✓ Synced docs: $SOURCE → $DEST"
