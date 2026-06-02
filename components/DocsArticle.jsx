@@ -12,16 +12,18 @@
  * or syntax-highlighting deps to the bundle.
  */
 
+// scrollMarginTop keeps an #anchor target from landing under the ~90px
+// fixed header when you jump to a heading via the URL hash or a TOC link.
 export function H1({ children, id }) {
-  return <h1 id={id} style={{ marginTop: 0, marginBottom: 16 }}>{children}</h1>;
+  return <h1 id={id} style={{ marginTop: 0, marginBottom: 16, scrollMarginTop: 110 }}>{children}</h1>;
 }
 
 export function H2({ children, id }) {
-  return <h2 id={id} style={{ marginTop: 48, marginBottom: 12, fontSize: 28 }}>{children}</h2>;
+  return <h2 id={id} style={{ marginTop: 48, marginBottom: 12, fontSize: 28, scrollMarginTop: 110 }}>{children}</h2>;
 }
 
 export function H3({ children, id }) {
-  return <h3 id={id} style={{ marginTop: 32, marginBottom: 10, fontSize: 22 }}>{children}</h3>;
+  return <h3 id={id} style={{ marginTop: 32, marginBottom: 10, fontSize: 22, scrollMarginTop: 110 }}>{children}</h3>;
 }
 
 export function P({ children }) {
