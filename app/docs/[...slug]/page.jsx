@@ -5,8 +5,8 @@ import remarkDirective from 'remark-directive';
 
 import { findDoc, loadAllDocs } from '@/lib/docs';
 import remarkCodetabs from '@/lib/remark-codetabs';
-import CodeTabs from '@/components/CodeTabs';
 import { H1, H2, H3, P, Code, Pre, Callout } from '@/components/DocsArticle';
+import { docsMarkdownComponents } from '@/components/docsMarkdown';
 
 /**
  * Dynamic docs route — resolves a slug to a markdown doc and renders.
@@ -143,59 +143,9 @@ function MarkdownBody({ body }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkDirective, remarkCodetabs]}
-      components={mdComponents}
+      components={docsMarkdownComponents}
     >
       {body}
     </ReactMarkdown>
   );
-}
-
-// Map markdown nodes onto our existing DocsArticle components so a
-// concept page rendered from markdown is visually identical to the
-// JSX-era pages.
-const mdComponents = {
-  h1: ({ children }) => <H1>{children}</H1>,
-  h2: ({ children, id }) => <H2 id={id}>{children}</H2>,
-  h3: ({ children, id }) => <H3 id={id}>{children}</H3>,
-  p: ({ children }) => <P>{children}</P>,
-  // react-markdown v9+ removed the `inline` prop, so we can't branch on it.
-  // Distinguish inline code from a fenced block by the className: only fenced
-  // blocks carry `language-*` (added by remark from the fence info string).
-  // Anything without it is an inline `code` span and renders as a chip — this
-  // is what was breaking: every inline span was falling through to <Pre> and
-  // rendering as a full-width padded block on its own line.
-  code: ({ children, className }) => {
-    const isFenced = /\blanguage-/.test(className || '');
-    if (!isFenced) return <Code>{children}</Code>;
-    const lang = (className || '').replace(/.*language-/, '').trim();
-    return <Pre lang={lang}>{String(children).replace(/\n$/, '')}</Pre>;
-  },
-  pre: ({ children }) => <>{children}</>, // skip the default <pre>, the code child renders Pre itself
-  ul: ({ children }) => <ul style={{ marginLeft: 20, color: 'var(--color-body)', lineHeight: 1.7 }}>{children}</ul>,
-  ol: ({ children }) => <ol style={{ marginLeft: 20, color: 'var(--color-body)', lineHeight: 1.7 }}>{children}</ol>,
-  blockquote: ({ children }) => <Callout type="note">{children}</Callout>,
-  // remark-codetabs rewrites the directive into a <codetabs tabs="..."/>
-  // HTML element. Pick up the JSON-encoded tabs prop and emit the real
-  // CodeTabs component.
-  codetabs: ({ tabs }) => {
-    try {
-      const parsed = JSON.parse(tabs);
-      return (
-        <CodeTabs
-          tabs={parsed.map((t) => ({
-            label: labelForLang(t.lang),
-            lang:  t.lang,
-            code:  t.value,
-          }))}
-        />
-      );
-    } catch {
-      return null;
-    }
-  },
-};
-
-function labelForLang(lang) {
-  const map = { jsx: 'React', tsx: 'React', js: 'JavaScript', ts: 'TypeScript', php: 'PHP', bash: 'Shell', json: 'JSON' };
-  return map[lang] || lang.toUpperCase();
 }
