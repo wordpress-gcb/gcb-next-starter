@@ -34,9 +34,37 @@ const poppins = Poppins({
   display: 'swap',
 });
 
+// metadataBase makes every page's canonical + OpenGraph URL absolute against
+// the docs domain, so search engines and link unfurlers resolve them correctly
+// (and the /sitemap.xml + /robots.txt URLs become absolute too). Override via
+// NEXT_PUBLIC_SITE_URL on the host if the domain ever changes.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://docs.gutenbergcontrolblocks.com';
+
 export const metadata = {
-  title: 'GCB Lite — typed Gutenberg fields, from a JSON file',
-  description: 'File-based schemas. No UI authoring. A scaffold CLI built for stdin. Render in PHP, React, or both — same typed fields, same source of truth.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'GCB Lite — typed Gutenberg fields, from a JSON file',
+    // Per-page titles set via generateMetadata become "<page> · GCB Lite".
+    template: '%s · GCB Lite',
+  },
+  description:
+    'File-based schemas. No UI authoring. A scaffold CLI built for stdin. Render in PHP, React, or both — same typed fields, same source of truth.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    siteName: 'GCB Lite',
+    url: '/',
+    title: 'GCB Lite — typed Gutenberg fields, from a JSON file',
+    description:
+      'File-based schemas, native Gutenberg authoring, headless-ready. Render in PHP, React, or both.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GCB Lite — typed Gutenberg fields, from a JSON file',
+    description:
+      'File-based schemas, native Gutenberg authoring, headless-ready. Render in PHP, React, or both.',
+  },
 };
 
 export default async function RootLayout({ children }) {

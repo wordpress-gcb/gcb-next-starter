@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
 
-import { findDoc } from '@/lib/docs';
+import { findDoc, docDescription } from '@/lib/docs';
 import remarkCodetabs from '@/lib/remark-codetabs';
 import remarkPaths from '@/lib/remark-paths';
 import { H1 } from '@/components/DocsArticle';
@@ -21,7 +21,14 @@ import { docsMarkdownComponents } from '@/components/docsMarkdown';
 export function generateMetadata() {
   const doc = findDoc([]);
   if (!doc) return {};
-  return { title: `GCB Lite — ${doc.title}` };
+  const description = docDescription(doc);
+  return {
+    title: doc.title,
+    description,
+    alternates: { canonical: '/docs' },
+    openGraph: { title: doc.title, description, url: '/docs', type: 'article' },
+    twitter: { title: doc.title, description },
+  };
 }
 
 export default function DocsIndex() {
