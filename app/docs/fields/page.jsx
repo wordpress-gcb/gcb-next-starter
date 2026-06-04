@@ -5,7 +5,12 @@ import { H1, H2, H3, P, Code, Callout } from '@/components/DocsArticle';
 import ControlRef from '@/components/ControlRef';
 import { findDoc, loadAllDocs } from '@/lib/docs';
 
-export const metadata = { title: 'GCB Lite — Field reference' };
+export const metadata = {
+  title: 'Field reference',
+  description:
+    'Every GCB Lite Inspector control type — text, image, repeater, post-object and more — with the shape of value each one stores.',
+  alternates: { canonical: '/docs/fields' },
+};
 
 /**
  * Field-reference index page. Generated from the same plugin-owned

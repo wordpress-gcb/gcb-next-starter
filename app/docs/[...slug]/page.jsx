@@ -3,8 +3,9 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
 
-import { findDoc, loadAllDocs } from '@/lib/docs';
+import { findDoc, loadAllDocs, docDescription } from '@/lib/docs';
 import remarkCodetabs from '@/lib/remark-codetabs';
+import remarkPaths from '@/lib/remark-paths';
 import { H1, H2, H3, P, Code, Pre, Callout } from '@/components/DocsArticle';
 import { docsMarkdownComponents } from '@/components/docsMarkdown';
 
@@ -34,7 +35,16 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const doc = findDoc(params.slug);
   if (!doc) return {};
-  return { title: `GCB Lite — ${doc.title}` };
+  const description = docDescription(doc);
+  const url = doc.href;
+  // Title is just the page name; the root layout's template appends "· GCB Lite".
+  return {
+    title: doc.title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title: doc.title, description, url, type: 'article' },
+    twitter: { title: doc.title, description },
+  };
 }
 
 export default function DocPage({ params }) {
@@ -142,7 +152,7 @@ function ConceptArticle({ doc }) {
 function MarkdownBody({ body }) {
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkGfm, remarkDirective, remarkCodetabs]}
+      remarkPlugins={[remarkGfm, remarkDirective, remarkCodetabs, remarkPaths]}
       components={docsMarkdownComponents}
     >
       {body}
