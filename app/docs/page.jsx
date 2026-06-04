@@ -5,6 +5,7 @@ import remarkDirective from 'remark-directive';
 
 import { findDoc } from '@/lib/docs';
 import remarkCodetabs from '@/lib/remark-codetabs';
+import remarkPaths from '@/lib/remark-paths';
 import { H1 } from '@/components/DocsArticle';
 import { docsMarkdownComponents } from '@/components/docsMarkdown';
 
@@ -31,7 +32,7 @@ export default function DocsIndex() {
     <>
       <H1>{doc.title}</H1>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkDirective, remarkCodetabs]}
+        remarkPlugins={[remarkGfm, remarkDirective, remarkCodetabs, remarkPaths]}
         components={docsMarkdownComponents}
       >
         {doc.body}

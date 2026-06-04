@@ -5,6 +5,7 @@ import remarkDirective from 'remark-directive';
 
 import { findDoc, loadAllDocs } from '@/lib/docs';
 import remarkCodetabs from '@/lib/remark-codetabs';
+import remarkPaths from '@/lib/remark-paths';
 import { H1, H2, H3, P, Code, Pre, Callout } from '@/components/DocsArticle';
 import { docsMarkdownComponents } from '@/components/docsMarkdown';
 
@@ -142,7 +143,7 @@ function ConceptArticle({ doc }) {
 function MarkdownBody({ body }) {
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkGfm, remarkDirective, remarkCodetabs]}
+      remarkPlugins={[remarkGfm, remarkDirective, remarkCodetabs, remarkPaths]}
       components={docsMarkdownComponents}
     >
       {body}

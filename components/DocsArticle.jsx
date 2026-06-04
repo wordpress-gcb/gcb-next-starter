@@ -7,6 +7,7 @@
  * - <Pre lang="js"> ...     — block code with language badge
  * - <Callout type="note">   — coloured aside (note | warn | tip)
  * - <Field>                 — reference card for control config (key + type + description)
+ * - <Table> / <Th> / <Td>   — bordered, padded GFM tables
  *
  * Kept deliberately small. The goal is readable docs without adding MDX
  * or syntax-highlighting deps to the bundle.
@@ -122,5 +123,71 @@ export function Field({ name, type, required = false, children }) {
       </div>
       <div style={{ marginTop: 6, color: 'var(--color-body)' }}>{children}</div>
     </div>
+  );
+}
+
+// GFM tables. react-markdown emits bare <table>/<th>/<td> with no styling,
+// so without these the comparison + options tables on the docs render as
+// borderless, padding-less runs of text. Bordered + zebra-striped, wrapped
+// in an overflow-x container so wide option tables scroll on mobile instead
+// of blowing out the layout.
+const TABLE_BORDER = '1px solid #e3e0d8';
+
+export function Table({ children }) {
+  // Zebra striping via a scoped :nth-child rule rather than per-row inline
+  // styles — react-markdown gives us no row index, and cloning the row
+  // elements to inject a style breaks RSC serialization. A static class +
+  // <style> is server-renderable and needs no row-level cooperation.
+  return (
+    <div style={{ overflowX: 'auto', marginBottom: 20 }}>
+      <style>{'.gcb-doc-table tbody tr:nth-child(even){background:#faf9f6}'}</style>
+      <table
+        className="gcb-doc-table"
+        style={{
+          borderCollapse: 'collapse',
+          width: '100%',
+          fontSize: 14,
+          lineHeight: 1.6,
+          border: TABLE_BORDER,
+        }}
+      >
+        {children}
+      </table>
+    </div>
+  );
+}
+
+export function Th({ children, style }) {
+  return (
+    <th
+      style={{
+        textAlign: 'left',
+        verticalAlign: 'top',
+        padding: '10px 14px',
+        border: TABLE_BORDER,
+        background: '#f7f5f1',
+        fontWeight: 600,
+        ...style,
+      }}
+    >
+      {children}
+    </th>
+  );
+}
+
+export function Td({ children, style }) {
+  return (
+    <td
+      style={{
+        textAlign: 'left',
+        verticalAlign: 'top',
+        padding: '10px 14px',
+        border: TABLE_BORDER,
+        color: 'var(--color-body)',
+        ...style,
+      }}
+    >
+      {children}
+    </td>
   );
 }
